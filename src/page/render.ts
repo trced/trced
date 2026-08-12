@@ -4,7 +4,7 @@
 
 import { CONTENT, LANGS } from '../content/index.ts'
 import type { Lang } from '../content/index.ts'
-import { BRAND, ORG_URL, PATHS, PERSONAL_URL } from './links.ts'
+import { APP_URLS, BRAND, ORG_URL, PATHS, PERSONAL_URL } from './links.ts'
 
 const ESCAPES: Record<string, string> = {
   '&': '&amp;',
@@ -122,8 +122,14 @@ function renderApps(lang: Lang): string {
       const status = a.status
         ? `\n    <span class="row__status">${escapeHtml(a.status)}</span>`
         : ''
+      const url = APP_URLS[a.name]
+      // Une application ouverte est une destination : on y va, on ne
+      // l'ouvre pas dans un onglet à côté comme on consulte un dépôt.
+      const name = url
+        ? `<a class="row__name" href="${url}">${escapeHtml(a.name)}</a>`
+        : `<span class="row__name">${escapeHtml(a.name)}</span>`
       return `  <li class="row row--app">
-    <span class="row__name">${escapeHtml(a.name)}</span>
+    ${name}
     <span class="row__desc">${escapeHtml(a.desc)}</span>${status}
   </li>`
     })

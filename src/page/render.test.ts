@@ -1,7 +1,7 @@
 import { describe, expect, test } from 'vitest'
 import { escapeHtml, renderBody, renderHead } from './render.ts'
 import { CONTENT } from '../content/index.ts'
-import { ORG_URL, PERSONAL_URL } from './links.ts'
+import { APP_URLS, ORG_URL, PERSONAL_URL } from './links.ts'
 
 const ORIGIN = 'https://trced.example'
 
@@ -51,6 +51,26 @@ describe('renderBody', () => {
     expect(items[0]?.textContent).toContain('month.')
     expect(items[0]?.textContent).toContain(CONTENT.en.apps[0]!.desc)
     expect(items[0]?.textContent).toContain(CONTENT.en.apps[0]!.status)
+  })
+
+  test('une application en ligne s’ouvre depuis son nom', () => {
+    const doc = parseBody(renderBody('fr', 2026))
+    const rows = [...doc.querySelectorAll('[data-list="apps"] li')]
+    const race = rows.find((li) => li.textContent?.includes('race.'))
+
+    const link = race?.querySelector('a')
+    expect(link?.getAttribute('href')).toBe(APP_URLS['race.'])
+    expect(link?.textContent).toBe('race.')
+    // Destination, pas référence : on y va, on ne l'ouvre pas à côté.
+    expect(link?.hasAttribute('target')).toBe(false)
+  })
+
+  test('une application encore en chantier n’est pas un lien', () => {
+    const doc = parseBody(renderBody('fr', 2026))
+    const rows = [...doc.querySelectorAll('[data-list="apps"] li')]
+    const month = rows.find((li) => li.textContent?.includes('month.'))
+    expect(month?.querySelector('a')).toBeNull()
+    expect(month?.textContent).toContain('month.')
   })
 
   test('la langue courante est indiquée, l’autre est un lien', () => {

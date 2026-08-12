@@ -58,6 +58,14 @@ describe('contenu', () => {
     )
   })
 
+  test('une application en ligne porte le même statut dans les deux langues', () => {
+    // « v0.1.0 » n'est pas une phrase : une version ne se traduit pas.
+    const version = (lang: (typeof LANGS)[number]) =>
+      CONTENT[lang].apps.find((a) => a.name === 'race.')?.status
+    expect(version('fr')).toBe('v0.1.0')
+    expect(version('en')).toBe('v0.1.0')
+  })
+
   test('chaque application a une description', () => {
     for (const lang of LANGS) {
       for (const app of CONTENT[lang].apps) {

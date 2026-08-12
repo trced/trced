@@ -19,11 +19,11 @@ export const en: Content = {
   ],
 
   appsTitle: 'apps',
-  appsNote: 'none shipped yet',
+  appsNote: 'one shipped',
   apps: [
     { name: 'month.', desc: 'your month on one page', status: 'in progress' },
     { name: 'habit.', desc: 'keeping a habit', status: 'in progress' },
-    { name: 'race.', desc: 'running, nothing else', status: 'in progress' },
+    { name: 'race.', desc: 'running, nothing else', status: 'v0.1.0' },
     { name: '…', desc: 'more will follow, one at a time', status: '' },
   ],
 
