@@ -1,0 +1,29 @@
+{
+  "name": "trced",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "trced. — une chose, bien faite. Site vitrine de la philosophie.",
+  "license": "AGPL-3.0-or-later",
+  "author": "Andrea Larboullet Marin",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/trced/trced.git"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "icons": "node scripts/make-icons.mjs"
+  },
+  "devDependencies": {
+    "@types/node": "^26.2.0",
+    "jsdom": "^30.0.1",
+    "typescript": "^7.0.2",
+    "vite": "^8.2.1",
+    "vitest": "^4.1.10"
+  }
+}

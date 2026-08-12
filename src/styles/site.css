@@ -1,0 +1,218 @@
+/* site.css — la page. Un document d'une seule colonne : ce qui change
+   d'un écran à l'autre, c'est l'air autour du texte, jamais sa structure. */
+
+.page {
+  max-width: var(--measure);
+  margin: 0 auto;
+  padding: var(--page-padding-top) var(--page-padding-x)
+    var(--page-padding-bottom);
+  display: flex;
+  flex-direction: column;
+  gap: var(--page-gap);
+}
+
+/* Le contenu est un repère à part : l'en-tête et le pied l'encadrent sans
+   y entrer. L'espacement, lui, ne connaît pas cette frontière. */
+.page__main {
+  display: flex;
+  flex-direction: column;
+  gap: var(--page-gap);
+}
+
+/* ————— en-tête ————— */
+
+.page__header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.page__title {
+  display: flex;
+  gap: var(--space-4);
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.brand {
+  font-size: var(--text-display);
+  line-height: var(--leading-display);
+  letter-spacing: var(--tracking-display);
+  font-weight: var(--weight-medium);
+}
+
+.tagline {
+  font-size: var(--text-lead);
+  line-height: var(--leading-lead);
+  letter-spacing: var(--tracking-lead);
+}
+
+/* ————— navigation de langue —————
+   Deux états côte à côte dans un même cadre : celui de la page, en négatif,
+   et le lien vers l'autre. La cible dépasse 24 px dans les deux dimensions,
+   sans grossir le cadre au point de concurrencer le titre. */
+
+.lang {
+  display: flex;
+  flex: none;
+  border: var(--rule-width) solid var(--color-ink);
+  font-size: var(--text-meta);
+  line-height: var(--leading-meta);
+}
+
+.lang__current,
+.lang__link {
+  padding: 9px 12px;
+  text-decoration: none;
+}
+
+.lang__current {
+  background: var(--color-ink);
+  color: var(--color-bg);
+}
+
+.lang__link {
+  color: var(--color-muted-strong);
+}
+
+.lang__link:hover {
+  color: var(--color-ink);
+}
+
+.lang__link:focus-visible {
+  outline-offset: -3px;
+}
+
+/* ————— sections ————— */
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.section__head {
+  display: flex;
+  gap: var(--space-3);
+  align-items: baseline;
+  padding-bottom: var(--space-2);
+  border-bottom: var(--rule-width) solid var(--color-ink);
+}
+
+.section__number {
+  font-size: var(--text-meta);
+  color: var(--color-muted);
+}
+
+.section__title {
+  font-size: var(--text-label);
+  font-weight: var(--weight-medium);
+}
+
+.section__note {
+  margin-left: auto;
+  font-size: var(--text-meta);
+  color: var(--color-muted-strong);
+  text-align: right;
+}
+
+/* ————— lignes —————
+   Une ligne par élément, séparée par un filet : la liste se lit de haut en
+   bas sans qu'aucune ligne n'ait besoin d'être encadrée. */
+
+.rows {
+  display: flex;
+  flex-direction: column;
+}
+
+.row {
+  padding: var(--space-3) 0;
+  border-bottom: var(--rule-width) solid var(--color-rule);
+}
+
+.row--principle {
+  display: grid;
+  grid-template-columns: 28px 1fr;
+  gap: var(--space-3);
+  padding: 10px 0;
+}
+
+.row__number {
+  font-size: var(--text-meta);
+  color: var(--color-muted);
+}
+
+/* Nom, description, statut. À l'étroit, la description passe dessous
+   plutôt que de s'étrangler en colonne de trois mots ; dès qu'il y a la
+   place, les trois reviennent sur une seule ligne. */
+.row--app {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: var(--space-1) var(--space-4);
+  align-items: baseline;
+}
+
+.row__name {
+  grid-column: 1;
+}
+
+.row__status {
+  grid-column: 2;
+  grid-row: 1;
+  text-align: right;
+}
+
+.row__desc {
+  grid-column: 1 / -1;
+}
+
+@media (min-width: 640px) {
+  .row--app {
+    grid-template-columns: 5em 1fr auto;
+  }
+
+  .row__desc {
+    grid-column: 2;
+    grid-row: 1;
+  }
+}
+
+.row--link {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-4);
+  align-items: baseline;
+}
+
+.row__label {
+  min-width: 5em;
+}
+
+.row__label {
+  font-size: var(--text-meta);
+  color: var(--color-muted-strong);
+}
+
+.row__desc {
+  flex: 1 1 12ch;
+  color: var(--color-muted-strong);
+}
+
+.row__status {
+  font-size: var(--text-meta);
+  color: var(--color-muted-strong);
+}
+
+/* ————— pied de page ————— */
+
+.page__footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-6);
+  justify-content: space-between;
+  padding-top: var(--space-5);
+  border-top: var(--rule-width) solid var(--color-ink);
+  font-size: var(--text-meta);
+  line-height: var(--leading-meta);
+  color: var(--color-muted-strong);
+}

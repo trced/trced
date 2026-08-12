@@ -1,0 +1,95 @@
+/* tokens.css — source unique de valeurs.
+   Famille « . » (trced) 1.1.0 — sous-ensemble utile à un document : les
+   tokens de composants applicatifs (champs, feuilles, listes) n'ont pas
+   leur place ici. Une valeur en dur dans une règle est un défaut de
+   conformité. */
+
+:root {
+  /* 1 · primitifs — jamais utilisés directement dans une règle */
+  --grey-50: #f2f3f2;
+  --grey-300: #c8cac8;
+  --grey-500: #8b8d8c;
+  --grey-550: #74766f;
+  --grey-600: #6a6c6a;
+  --grey-800: #34362f;
+  --grey-850: #17181a;
+  --grey-900: #121311;
+  --paper-100: #ecebe6;
+
+  /* 2 · sémantiques — thème clair */
+  --color-bg: var(--grey-50);
+  --color-ink: var(--grey-850);
+  /* --color-muted ne porte que du décor : les numéros de rappel, retirés de
+     l'arbre d'accessibilité. Tout texte qui informe prend muted-strong, seul
+     à tenir le contraste AA sur le fond de la famille. */
+  --color-muted: var(--grey-500);
+  --color-muted-strong: var(--grey-600);
+  --color-rule: var(--grey-300);
+  --color-selection: color-mix(in srgb, var(--color-ink) 8%, var(--color-bg));
+
+  /* 3 · échelles */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+
+  /* La famille est à angles droits : aucune surface n'arrondit. */
+  --radius-sm: 0;
+
+  --rule-width: 1px;
+  --touch-target: 44px;
+
+  --motion-micro: 120ms;
+  --ease-out: cubic-bezier(0.2, 0, 0, 1);
+
+  /* 4 · typographie
+     Le canvas descend à 13px ; le design system pose 15px pour le corps
+     d'un document, et c'est cette valeur qui fait foi. */
+  --font-family: ui-monospace, 'SF Mono', 'JetBrains Mono', 'IBM Plex Mono',
+    Menlo, Consolas, monospace;
+  --text-display: clamp(28px, 6.5vw, 44px);
+  --text-lead: clamp(15px, 3.2vw, 17px);
+  --text-body: clamp(14px, 1.1vw, 15px);
+  --text-label: 14px;
+  --text-meta: 12px;
+  --leading-display: 1;
+  --leading-lead: 1.35;
+  --leading-body: 1.55;
+  --leading-meta: 1.4;
+  --tracking-display: -0.04em;
+  --tracking-lead: -0.01em;
+  --weight-regular: 400;
+  --weight-medium: 500;
+
+  /* 5 · mise en page
+     La mesure prime sur la largeur d'écran : le texte ne s'étire jamais
+     au-delà de ce qui se lit d'un seul mouvement des yeux. */
+  --measure: 660px;
+  --page-padding-x: clamp(20px, 5vw, 32px);
+  --page-padding-top: clamp(32px, 8vw, 96px);
+  --page-padding-bottom: clamp(64px, 12vw, 120px);
+  --page-gap: clamp(40px, 7vw, 64px);
+
+  color-scheme: light dark;
+}
+
+/* Le thème suit le système. Le site n'a pas de réglage : il n'a rien à
+   retenir d'une visite à l'autre. */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-bg: var(--grey-900);
+    --color-ink: var(--paper-100);
+    --color-muted: var(--grey-550);
+    --color-muted-strong: #8e9089;
+    --color-rule: var(--grey-800);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --motion-micro: 0ms;
+  }
+}

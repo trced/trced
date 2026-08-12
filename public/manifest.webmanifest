@@ -1,0 +1,22 @@
+{
+  "name": "trced.",
+  "short_name": "trced.",
+  "description": "Une famille de micro-applications. Chacune fait une seule chose. Sans compte, sans traceur, hors ligne.",
+  "lang": "fr",
+  "dir": "ltr",
+  "start_url": "/",
+  "scope": "/",
+  "display": "browser",
+  "background_color": "#f2f3f2",
+  "theme_color": "#f2f3f2",
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    {
+      "src": "/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
