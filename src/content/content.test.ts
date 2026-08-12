@@ -1,5 +1,6 @@
 import { describe, expect, test } from 'vitest'
 import { CONTENT, LANGS } from './index.ts'
+import { APP_URLS } from '../page/links.ts'
 
 /** Le contenu est la seule source de vérité du site : les deux langues
  *  doivent rester des miroirs l'une de l'autre, sinon une page se retrouve
@@ -58,12 +59,27 @@ describe('contenu', () => {
     )
   })
 
-  test('une application en ligne porte le même statut dans les deux langues', () => {
-    // « v0.1.0 » n'est pas une phrase : une version ne se traduit pas.
-    const version = (lang: (typeof LANGS)[number]) =>
-      CONTENT[lang].apps.find((a) => a.name === 'race.')?.status
-    expect(version('fr')).toBe('v0.1.0')
-    expect(version('en')).toBe('v0.1.0')
+  test('une version ne se traduit pas', () => {
+    // « v0.1.0 » n'est pas une phrase.
+    for (const name of Object.keys(APP_URLS)) {
+      const fr = CONTENT.fr.apps.find((a) => a.name === name)?.status
+      const en = CONTENT.en.apps.find((a) => a.name === name)?.status
+      expect(fr, name).toMatch(/^v\d+\.\d+\.\d+$/)
+      expect(en, name).toBe(fr)
+    }
+  })
+
+  test('une application liée est une application publiée, et l’inverse', () => {
+    // Le piège du jour où une application sort : ouvrir l'adresse et
+    // oublier le statut, ou l'inverse. La page annoncerait alors une chose
+    // et en ferait une autre.
+    for (const lang of LANGS) {
+      for (const app of CONTENT[lang].apps) {
+        const liee = Boolean(APP_URLS[app.name])
+        const publiee = /^v\d+\.\d+\.\d+$/.test(app.status)
+        expect(publiee, `${app.name} (${lang})`).toBe(liee)
+      }
+    }
   })
 
   test('chaque application a une description', () => {

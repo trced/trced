@@ -19,11 +19,12 @@ export const en: Content = {
   ],
 
   appsTitle: 'apps',
-  appsNote: 'one shipped',
+  appsNote: 'two shipped',
+  // Chaque description est la promesse que l'application affiche
+  // elle-même sur sa page d'accueil : la vitrine ne reformule pas.
   apps: [
-    { name: 'month.', desc: 'your month on one page', status: 'in progress' },
-    { name: 'habit.', desc: 'keeping a habit', status: 'in progress' },
-    { name: 'race.', desc: 'running, nothing else', status: 'v0.1.0' },
+    { name: 'habit.', desc: 'one week, one grid', status: 'v0.1.0' },
+    { name: 'race.', desc: 'all your races, one line each', status: 'v0.1.0' },
     { name: '…', desc: 'more will follow, one at a time', status: '' },
   ],
 

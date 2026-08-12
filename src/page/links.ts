@@ -11,6 +11,7 @@ export const PERSONAL_URL = 'https://github.com/alarboulletmarin'
  *  n'est pas du texte : elle n'a rien à faire dans les dictionnaires.
  *  Absente d'ici, l'application n'est pas encore ouverte. */
 export const APP_URLS: Record<string, string> = {
+  'habit.': 'https://habit-eight-blue.vercel.app/',
   'race.': 'https://race-ochre.vercel.app/',
 }
 

@@ -48,7 +48,7 @@ describe('renderBody', () => {
     const doc = parseBody(renderBody('en', 2026))
     const items = [...doc.querySelectorAll('[data-list="apps"] li')]
     expect(items).toHaveLength(CONTENT.en.apps.length)
-    expect(items[0]?.textContent).toContain('month.')
+    expect(items[0]?.textContent).toContain(CONTENT.en.apps[0]!.name)
     expect(items[0]?.textContent).toContain(CONTENT.en.apps[0]!.desc)
     expect(items[0]?.textContent).toContain(CONTENT.en.apps[0]!.status)
   })
@@ -65,12 +65,18 @@ describe('renderBody', () => {
     expect(link?.hasAttribute('target')).toBe(false)
   })
 
-  test('une application encore en chantier n’est pas un lien', () => {
+  test('ce qui n’est pas encore ouvert n’est pas un lien', () => {
     const doc = parseBody(renderBody('fr', 2026))
     const rows = [...doc.querySelectorAll('[data-list="apps"] li')]
-    const month = rows.find((li) => li.textContent?.includes('month.'))
-    expect(month?.querySelector('a')).toBeNull()
-    expect(month?.textContent).toContain('month.')
+    const inconnues = CONTENT.fr.apps.filter((a) => !APP_URLS[a.name])
+    // Il en reste au moins une : la ligne qui annonce la suite.
+    expect(inconnues.length).toBeGreaterThan(0)
+
+    for (const app of inconnues) {
+      const row = rows.find((li) => li.textContent?.includes(app.desc))
+      expect(row?.querySelector('a'), app.name).toBeNull()
+      expect(row?.textContent).toContain(app.name)
+    }
   })
 
   test('la langue courante est indiquée, l’autre est un lien', () => {
