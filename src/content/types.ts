@@ -48,4 +48,10 @@ export interface Content {
   langNavLabel: string
   langCode: string
   langSwitchLabel: string
+
+  /** Réglage du thème. `themeAuto` est l'état par défaut : le système. */
+  themeLabel: string
+  themeAuto: string
+  themeLight: string
+  themeDark: string
 }

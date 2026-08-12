@@ -7,10 +7,13 @@ qu'elle refuse, et où en sont ses applications. Une page, deux langues.
 
 ## Ce que le navigateur reçoit
 
-Deux fichiers HTML complets et une feuille de style. **Aucun JavaScript** :
-la page affiche du texte, elle n'a rien à exécuter pour ça. Le contenu est
-écrit dans les fichiers au moment du build, ce qui vaut aussi pour les
-moteurs de recherche et les lecteurs sans script.
+Deux fichiers HTML complets, une feuille de style, et **1,4 Ko de
+JavaScript qui ne sert qu'au réglage du thème**. Le contenu, lui, est
+écrit dans les fichiers au moment du build : rien n'est rendu côté
+navigateur, ce qui vaut aussi pour les moteurs de recherche et les
+lecteurs sans script. Coupez le JavaScript, la page entière reste lisible
+— seul le sélecteur de thème disparaît, et il est rendu caché pour cette
+raison.
 
 | Adresse | Langue |
 | ------- | ------ |
@@ -40,12 +43,14 @@ npm run icons      # regénère favicon et icônes depuis le glyphe « t. »
 index.html          squelette fr — deux marqueurs, remplis au build
 en/index.html       squelette en
 src/
+  main.ts           le seul script livré : il allume le réglage du thème
   content/          le contenu, et lui seul
     fr.ts           référence
     en.ts           miroir typé de fr.ts
     types.ts        forme d'une page
   page/
     render.ts       contenu → HTML, fonctions pures
+    theme.ts        auto / clair / sombre, mémorisé localement
     links.ts        nom, adresses des dépôts, chemins des langues
     origin.ts       domaine du site, connu au build
   styles/
@@ -115,7 +120,17 @@ SITE_ORIGIN=https://trced.dev npm run build
   d'accessibilité : la liste ordonnée porte déjà cette information.
 - Le texte qui informe tient le contraste AA sur les deux thèmes. La
   nuance la plus claire du design system ne sert qu'au décor.
-- Le thème suit le système. Il n'y a pas de réglage, donc rien à mémoriser.
+- Le thème suit le système par défaut, et se force à clair ou sombre. Le
+  choix est le seul état retenu (`trced-theme` en stockage local) ; un
+  script en-tête l'applique avant le premier rendu, sans clignotement.
+
+## Mise en page
+
+Une colonne centrée jusqu'à 1120 px. Au-delà, trois colonnes dont les deux
+latérales sont de même largeur : c'est ce qui laisse le document au centre
+exact de la fenêtre pendant que l'identité occupe la marge gauche. Les
+filets vont d'un bord à l'autre — ce sont eux qui tiennent la largeur, pas
+le texte, qui garde sa mesure de lecture (`--measure-text`).
 
 ## Licence
 

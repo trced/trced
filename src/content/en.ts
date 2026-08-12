@@ -42,4 +42,9 @@ export const en: Content = {
   langNavLabel: 'language',
   langCode: 'en',
   langSwitchLabel: 'View this page in English',
+
+  themeLabel: 'theme',
+  themeAuto: 'auto',
+  themeLight: 'light',
+  themeDark: 'dark',
 }

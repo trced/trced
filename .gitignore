@@ -19,6 +19,7 @@ npm-debug.log*
 
 # artefacts de capture (Playwright MCP)
 .playwright-mcp/
+.shots/
 
 # caches d'outillage local
 .claude/tsc-cache/

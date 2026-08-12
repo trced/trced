@@ -14,8 +14,21 @@
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/manifest.webmanifest" />
     <link rel="stylesheet" href="/src/styles/index.css" />
+    <script>
+      // Appliqué avant le premier rendu : évite le clignotement d'un thème
+      // clair chez qui a choisi le sombre. Lecture locale, aucune requête.
+      try {
+        var t = localStorage.getItem('trced-theme')
+        if (t === 'light' || t === 'dark') {
+          document.documentElement.setAttribute('data-theme', t)
+        }
+      } catch (e) {
+        /* stockage indisponible : le thème suit le système */
+      }
+    </script>
   </head>
   <body>
     <!--%body%-->
+    <script type="module" src="/src/main.ts"></script>
   </body>
 </html>

@@ -47,40 +47,51 @@
   letter-spacing: var(--tracking-lead);
 }
 
-/* ————— navigation de langue —————
-   Deux états côte à côte dans un même cadre : celui de la page, en négatif,
-   et le lien vers l'autre. La cible dépasse 24 px dans les deux dimensions,
-   sans grossir le cadre au point de concurrencer le titre. */
+/* ————— sélecteurs —————
+   Un même cadre pour la langue et pour le thème : les états côte à côte,
+   l'état courant en négatif. On lit le réglage, on ne le devine pas à une
+   couleur. La cible dépasse 24 px dans les deux dimensions, sans grossir
+   le cadre au point de concurrencer le titre. */
 
-.lang {
+.segments {
   display: flex;
   flex: none;
+  align-self: flex-start;
   border: var(--rule-width) solid var(--color-ink);
   font-size: var(--text-meta);
   line-height: var(--leading-meta);
 }
 
-.lang__current,
-.lang__link {
+.segments__item {
   padding: 9px 12px;
+  border: 0;
+  background: transparent;
+  color: var(--color-muted-strong);
   text-decoration: none;
+  cursor: pointer;
 }
 
-.lang__current {
+.segments__item--on,
+.segments__item[aria-pressed='true'] {
   background: var(--color-ink);
   color: var(--color-bg);
 }
 
-.lang__link {
-  color: var(--color-muted-strong);
+.segments__item--on {
+  cursor: default;
 }
 
-.lang__link:hover {
+.segments__item:hover:not(.segments__item--on):not([aria-pressed='true']) {
   color: var(--color-ink);
 }
 
-.lang__link:focus-visible {
+.segments__item:focus-visible {
   outline-offset: -3px;
+}
+
+/* Caché tant que le script ne l'a pas repris en main. */
+.segments[hidden] {
+  display: none;
 }
 
 /* ————— sections ————— */
@@ -201,6 +212,106 @@
 .row__status {
   font-size: var(--text-meta);
   color: var(--color-muted-strong);
+}
+
+/* ————— deux colonnes —————
+   Passé cette largeur, une colonne centrée laisse trop de vide de part et
+   d'autre. L'identité se range à gauche et ne bouge plus ; le document
+   défile à droite, où les listes prennent enfin leurs aises. L'ordre du
+   document, lui, ne change pas : seule leur place à l'écran change. */
+
+@media (min-width: 1120px) {
+  .page {
+    /* Trois colonnes, les latérales de même largeur : c'est ce qui met le
+       document au centre exact de la fenêtre. Celle de droite reste vide,
+       et c'est très bien — elle est traversée par les filets. */
+    --gutter: clamp(32px, 4vw, 64px);
+    --inset: calc(var(--sidebar) + var(--gutter));
+    max-width: none;
+    display: grid;
+    grid-template-columns: var(--sidebar) minmax(0, var(--measure-doc)) var(--sidebar);
+    grid-template-rows: auto 1fr;
+    column-gap: var(--gutter);
+    justify-content: center;
+    align-items: start;
+  }
+
+  /* Le titre, la promesse et le choix de langue s'empilent : dans une
+     colonne étroite, ils ne tiennent plus côte à côte. */
+  .page__title {
+    display: contents;
+  }
+
+  /* Le fond opaque n'est pas un décor : le document passe dessous, et ses
+     filets doivent s'arrêter au bord de l'identité, pas la barrer. */
+  .page__header {
+    grid-column: 1;
+    grid-row: 1;
+    position: sticky;
+    top: var(--page-padding-top);
+    z-index: 1;
+    align-items: flex-start;
+    background: var(--color-bg);
+    padding-bottom: var(--space-4);
+  }
+
+  .brand {
+    order: 1;
+  }
+
+  .tagline {
+    order: 2;
+  }
+
+  /* La colonne est trop étroite pour que le titre et la langue tiennent
+     côte à côte : tout s'empile, dans l'ordre où on le lit. */
+  /* `display: contents` sort .page__title de la boîte mais pas de l'arbre :
+     la navigation reste sa descendante, jamais son enfant direct. */
+  .page__header nav.segments {
+    order: 3;
+    margin-top: var(--space-2);
+  }
+
+  .page__header [data-theme-switch] {
+    order: 4;
+  }
+
+  /* Le document occupe toute la grille : c'est ce qui permet aux filets
+     d'aller d'un bord à l'autre. Ce sont les éléments qui en portent un —
+     bandeaux de section et lignes de liste — qui s'étendent, et leur
+     contenu revient au centre par un retrait de la largeur d'une colonne
+     latérale. Ce qui n'a pas de filet se contente d'une marge. */
+  .page__main {
+    grid-column: 1 / -1;
+    grid-row: 1 / span 2;
+  }
+
+  .section__head,
+  .row {
+    padding-inline: var(--inset);
+  }
+
+  .manifesto p,
+  .section > p {
+    margin-inline: var(--inset);
+  }
+
+  .page__footer {
+    grid-column: 1;
+    grid-row: 2;
+    align-self: end;
+    z-index: 1;
+    flex-direction: column;
+    gap: var(--space-2);
+    background: var(--color-bg);
+  }
+
+  /* Ce qui se lit en continu ne s'allonge pas pour autant. */
+  .manifesto p,
+  .section > p,
+  .row__text {
+    max-width: var(--measure-text);
+  }
 }
 
 /* ————— pied de page ————— */

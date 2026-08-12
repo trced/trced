@@ -30,10 +30,6 @@ function indent(html: string, level: number): string {
     .trimStart()
 }
 
-function otherLang(lang: Lang): Lang {
-  return lang === 'fr' ? 'en' : 'fr'
-}
-
 /** En-tête du document : titre, description, et les adresses des deux
  *  langues quand le domaine est connu. */
 export function renderHead(lang: Lang, origin: string): string {
@@ -68,13 +64,33 @@ export function renderHead(lang: Lang, origin: string): string {
   return lines.join('\n    ')
 }
 
+/** Les deux langues dans leur ordre, toujours le même : celle de la page
+ *  est marquée sur place, l'autre est un lien. Un contrôle qui se déplace
+ *  quand on l'actionne se dérobe sous le doigt. */
 function renderLangNav(lang: Lang): string {
-  const other = otherLang(lang)
-  const o = CONTENT[other]
-  return `<nav class="lang" aria-label="${escapeHtml(CONTENT[lang].langNavLabel)}">
-  <span class="lang__current" aria-current="page">${escapeHtml(CONTENT[lang].langCode)}</span>
-  <a class="lang__link" href="${PATHS[other]}" hreflang="${other}" lang="${other}" aria-label="${escapeHtml(o.langSwitchLabel)}">${escapeHtml(o.langCode)}</a>
+  const items = LANGS.map((l) => {
+    const c = CONTENT[l]
+    return l === lang
+      ? `  <span class="segments__item segments__item--on" aria-current="page">${escapeHtml(c.langCode)}</span>`
+      : `  <a class="segments__item" href="${PATHS[l]}" hreflang="${l}" lang="${l}" aria-label="${escapeHtml(c.langSwitchLabel)}">${escapeHtml(c.langCode)}</a>`
+  })
+  return `<nav class="segments" aria-label="${escapeHtml(CONTENT[lang].langNavLabel)}">
+${items.join('\n')}
 </nav>`
+}
+
+/** Réglage du thème, rendu caché : sans script, ces boutons ne feraient
+ *  rien, et un réglage qui ne règle rien vaut moins que pas de réglage.
+ *  C'est `initThemeSwitch` qui le révèle. */
+function renderThemeSwitch(lang: Lang): string {
+  const c = CONTENT[lang]
+  const option = (value: string, label: string) =>
+    `  <button class="segments__item" type="button" data-theme-value="${value}" aria-pressed="${value === 'auto'}">${escapeHtml(label)}</button>`
+  return `<div class="segments" role="group" aria-label="${escapeHtml(c.themeLabel)}" data-theme-switch hidden>
+${option('auto', c.themeAuto)}
+${option('light', c.themeLight)}
+${option('dark', c.themeDark)}
+</div>`
 }
 
 /** Bandeau de section : un numéro, un titre, parfois une mention à droite. */
@@ -152,6 +168,7 @@ export function renderBody(lang: Lang, year: number): string {
           ${indent(renderLangNav(lang), 5)}
         </div>
         <p class="tagline">${escapeHtml(c.tagline)}</p>
+        ${indent(renderThemeSwitch(lang), 4)}
       </header>
 
       <main class="page__main" id="content">

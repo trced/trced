@@ -67,6 +67,16 @@ describe('renderBody', () => {
     expect(link?.textContent).toBe('en')
   })
 
+  test('les deux langues gardent leur place d’une page à l’autre', () => {
+    // Un bouton qui se déplace quand on l'actionne se retrouve sous le
+    // curseur de quelqu'un qui voulait faire autre chose.
+    for (const lang of ['fr', 'en'] as const) {
+      const doc = parseBody(renderBody(lang, 2026))
+      const items = [...doc.querySelectorAll('nav.segments .segments__item')]
+      expect(items.map((el) => el.textContent)).toEqual(['fr', 'en'])
+    }
+  })
+
   test('depuis l’anglais, le lien ramène à la racine française', () => {
     const doc = parseBody(renderBody('en', 2026))
     const link = doc.querySelector('nav a[hreflang]')
@@ -99,6 +109,36 @@ describe('renderBody', () => {
     const doc = parseBody(renderBody('fr', 2026))
     expect(doc.querySelector('footer')?.textContent).toContain('trced. — 2026')
     expect(doc.querySelector('footer')?.textContent).toContain(CONTENT.fr.footer)
+  })
+
+  test('le réglage de thème n’existe que si le script tourne', () => {
+    // Rendu caché : sans JavaScript, trois boutons morts vaudraient moins
+    // que rien. C'est le script qui les révèle.
+    const doc = parseBody(renderBody('fr', 2026))
+    const group = doc.querySelector('[data-theme-switch]')
+    expect(group?.hasAttribute('hidden')).toBe(true)
+    expect(group?.getAttribute('role')).toBe('group')
+    expect(group?.getAttribute('aria-label')).toBe(CONTENT.fr.themeLabel)
+
+    const options = [...doc.querySelectorAll('[data-theme-switch] button')]
+    expect(options.map((b) => b.getAttribute('data-theme-value'))).toEqual([
+      'auto',
+      'light',
+      'dark',
+    ])
+    expect(options.map((b) => b.textContent)).toEqual([
+      CONTENT.fr.themeAuto,
+      CONTENT.fr.themeLight,
+      CONTENT.fr.themeDark,
+    ])
+    // L'automatique est l'état rendu : c'est celui qu'on obtient sans rien
+    // avoir choisi.
+    expect(options.map((b) => b.getAttribute('aria-pressed'))).toEqual([
+      'true',
+      'false',
+      'false',
+    ])
+    expect(options.every((b) => b.getAttribute('type') === 'button')).toBe(true)
   })
 
   test('la page pose ses trois repères', () => {

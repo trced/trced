@@ -68,6 +68,14 @@
      La mesure prime sur la largeur d'écran : le texte ne s'étire jamais
      au-delà de ce qui se lit d'un seul mouvement des yeux. */
   --measure: 660px;
+  /* Un paragraphe garde cette mesure quelle que soit la place disponible ;
+     une liste, elle, peut occuper toute la colonne. */
+  --measure-text: 68ch;
+  /* Au-delà, la page se donne trois colonnes : le document reste au centre
+     de la fenêtre, l'identité occupe la marge gauche, la marge droite est
+     traversée par les filets. */
+  --measure-doc: 720px;
+  --sidebar: clamp(180px, 15vw, 240px);
   --page-padding-x: clamp(20px, 5vw, 32px);
   --page-padding-top: clamp(32px, 8vw, 96px);
   --page-padding-bottom: clamp(64px, 12vw, 120px);
@@ -76,16 +84,25 @@
   color-scheme: light dark;
 }
 
-/* Le thème suit le système. Le site n'a pas de réglage : il n'a rien à
-   retenir d'une visite à l'autre. */
+/* Le thème suit le système par défaut ; data-theme sur <html> porte le
+   choix explicite, dans les deux directions. C'est le seul état que ce
+   site retienne d'une visite à l'autre. */
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme='light']) {
     --color-bg: var(--grey-900);
     --color-ink: var(--paper-100);
     --color-muted: var(--grey-550);
     --color-muted-strong: #8e9089;
     --color-rule: var(--grey-800);
   }
+}
+
+:root[data-theme='dark'] {
+  --color-bg: var(--grey-900);
+  --color-ink: var(--paper-100);
+  --color-muted: var(--grey-550);
+  --color-muted-strong: #8e9089;
+  --color-rule: var(--grey-800);
 }
 
 @media (prefers-reduced-motion: reduce) {
