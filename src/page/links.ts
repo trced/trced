@@ -13,6 +13,7 @@ export const PERSONAL_URL = 'https://github.com/alarboulletmarin'
 export const APP_URLS: Record<string, string> = {
   'habit.': 'https://habit-eight-blue.vercel.app/',
   'race.': 'https://race-ochre.vercel.app/',
+  'urge.': 'https://urge-omega.vercel.app/',
 }
 
 /** La langue est dans l'URL : une adresse par langue, partageable telle

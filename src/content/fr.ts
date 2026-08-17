@@ -19,7 +19,7 @@ export const fr: Content = {
   ],
 
   appsTitle: 'applications',
-  appsNote: 'deux publiées',
+  appsNote: 'trois publiées',
   // Chaque description est la promesse que l'application affiche
   // elle-même sur sa page d'accueil : la vitrine ne reformule pas.
   apps: [
@@ -28,6 +28,11 @@ export const fr: Content = {
       name: 'race.',
       desc: 'toutes vos courses, une ligne chacune',
       status: 'v0.1.2',
+    },
+    {
+      name: 'urge.',
+      desc: 'une envie, trente jours, une question',
+      status: 'v0.1.0',
     },
     { name: '…', desc: "d'autres suivront, une à la fois", status: '' },
   ],
