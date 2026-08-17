@@ -1,8 +1,10 @@
 /* tokens.css — source unique de valeurs.
-   Famille « . » (trced) 1.1.0 — sous-ensemble utile à un document : les
+   Famille « . » (trced) 1.2.0 — sous-ensemble utile à un document : les
    tokens de composants applicatifs (champs, feuilles, listes) n'ont pas
    leur place ici. Une valeur en dur dans une règle est un défaut de
-   conformité. */
+   conformité.
+   Toute modification de la famille — un token, un composant, une feuille —
+   change cette version. Le journal est dans le document de référence. */
 
 :root {
   /* 1 · primitifs — jamais utilisés directement dans une règle */
@@ -48,7 +50,11 @@
   /* 4 · typographie
      Le canvas descend à 13px ; le design system pose 15px pour le corps
      d'un document, et c'est cette valeur qui fait foi. */
-  --font-family: ui-monospace, 'SF Mono', 'JetBrains Mono', 'IBM Plex Mono',
+  /* La face de la famille est embarquée (fonts.css) : elle vient donc en
+     tête, pour que le rendu soit le même sur toute machine. La pile système
+     reste derrière, pour le temps du chargement et pour les caractères que
+     les deux sous-ensembles latins ne couvrent pas. */
+  --font-family: 'JetBrains Mono', ui-monospace, 'SF Mono', 'IBM Plex Mono',
     Menlo, Consolas, monospace;
   --text-display: clamp(28px, 6.5vw, 44px);
   --text-lead: clamp(15px, 3.2vw, 17px);
