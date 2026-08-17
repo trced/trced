@@ -23,11 +23,11 @@ export const fr: Content = {
   // Chaque description est la promesse que l'application affiche
   // elle-même sur sa page d'accueil : la vitrine ne reformule pas.
   apps: [
-    { name: 'habit.', desc: 'une semaine, une grille', status: 'v0.1.0' },
+    { name: 'habit.', desc: 'une semaine, une grille', status: 'v0.1.1' },
     {
       name: 'race.',
       desc: 'toutes vos courses, une ligne chacune',
-      status: 'v0.1.0',
+      status: 'v0.1.2',
     },
     { name: '…', desc: "d'autres suivront, une à la fois", status: '' },
   ],
