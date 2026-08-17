@@ -2,28 +2,18 @@
 
 Une chose, bien faite.
 
-Site vitrine de la philosophie de la famille « . » : ce qu'elle est, ce
-qu'elle refuse, et où en sont ses applications. Une page, deux langues.
+Site vitrine de la philosophie de la famille « . » : ce qu'elle est, ce qu'elle refuse, et où en sont ses applications. Une page, deux langues.
 
 ## Ce que le navigateur reçoit
 
-Deux fichiers HTML complets, une feuille de style, et **1,4 Ko de
-JavaScript qui ne sert qu'au réglage du thème**. Le contenu, lui, est
-écrit dans les fichiers au moment du build : rien n'est rendu côté
-navigateur, ce qui vaut aussi pour les moteurs de recherche et les
-lecteurs sans script. Coupez le JavaScript, la page entière reste lisible
-— seul le sélecteur de thème disparaît, et il est rendu caché pour cette
-raison.
+Deux fichiers HTML complets, une feuille de style, et **1,4 Ko de JavaScript qui ne sert qu'au réglage du thème**. Le contenu, lui, est écrit dans les fichiers au moment du build : rien n'est rendu côté navigateur, ce qui vaut aussi pour les moteurs de recherche et les lecteurs sans script. Coupez le JavaScript, la page entière reste lisible. Seul le sélecteur de thème disparaît, et il est rendu caché pour cette raison.
 
 | Adresse | Langue |
 | ------- | ------ |
 | `/`     | fr     |
 | `/en/`  | en     |
 
-La langue est dans l'URL, pas dans un réglage : chaque version se partage
-telle quelle, et le site n'a rien à retenir d'une visite à l'autre. Les
-deux pages se déclarent l'une l'autre par `hreflang`, le français tenant
-lieu de `x-default`.
+La langue est dans l'URL, pas dans un réglage : chaque version se partage telle quelle, et le site n'a rien à retenir d'une visite à l'autre. Les deux pages se déclarent l'une l'autre par `hreflang`, le français tenant lieu de `x-default`.
 
 ## Commandes
 
@@ -69,44 +59,29 @@ vite.config.ts      le plugin qui écrit le contenu dans les squelettes
 
 ### Le mark
 
-`favicon.svg` et les icônes viennent de la forge de la famille
-(compétence `trced-logo`) : l'initiale du projet et le point, dans la fonte
-de l'interface, sur la grille de 32. Le point ne se retire ni ne se colore.
-`npm run icons` les régénère sans dépendance ni fonte — le tracé est figé
-dans `scripts/make-icons.mjs`. Changer le mark demande de repasser par la
-forge, pas d'éditer le script.
+`favicon.svg` et les icônes viennent de la forge de la famille (compétence `trced-logo`) : l'initiale du projet et le point, dans la fonte de l'interface, sur la grille de 32. Le point ne se retire ni ne se colore. `npm run icons` les régénère sans dépendance ni fonte : le tracé est figé dans `scripts/make-icons.mjs`. Changer le mark demande de repasser par la forge, pas d'éditer le script.
 
-Le manifeste ne sert qu'à donner une icône correcte à qui ajoute la page à
-son écran d'accueil : `display: browser`, aucun service worker. Le site est
-un site.
+Le manifeste ne sert qu'à donner une icône correcte à qui ajoute la page à son écran d'accueil : `display: browser`, aucun service worker. Le site est un site.
 
 ### Modifier le contenu
 
-Tout est dans `src/content/`. `fr.ts` fait référence, `en.ts` en est le
-miroir : un champ manquant ou en trop échoue à la compilation, et les
-tests refusent une liste plus courte d'un côté que de l'autre. Rien à
-toucher ailleurs — le HTML se régénère.
+Tout est dans `src/content/`. `fr.ts` fait référence, `en.ts` en est le miroir : un champ manquant ou en trop échoue à la compilation, et les tests refusent une liste plus courte d'un côté que de l'autre. Rien à toucher ailleurs : le HTML se régénère.
 
 ### Modifier l'apparence
 
-`src/styles/tokens.css` d'abord. Une valeur en dur dans une règle est un
-défaut de conformité : le design system est partagé avec les applications
-de la famille, il ne se contourne pas au cas par cas.
+`src/styles/tokens.css` d'abord. Une valeur en dur dans une règle est un défaut de conformité : le design system est partagé avec les applications de la famille, il ne se contourne pas au cas par cas.
 
 ## Déploiement
 
-Sortie statique dans `dist/` : n'importe quel hébergement de fichiers
-convient. Vercel et Netlify détectent Vite sans configuration.
+Sortie statique dans `dist/` : n'importe quel hébergement de fichiers convient. Vercel et Netlify détectent Vite sans configuration.
 
-Les adresses canoniques, les `hreflang` et l'image de partage ont besoin
-du domaine, connu seulement au build. Il est lu dans cet ordre :
+Les adresses canoniques, les `hreflang` et l'image de partage ont besoin du domaine, connu seulement au build. Il est lu dans cet ordre :
 
 1. `SITE_ORIGIN` — à renseigner dès qu'un domaine est arrêté ;
 2. `URL` — fourni par Netlify ;
 3. `VERCEL_PROJECT_PRODUCTION_URL` — fourni par Vercel.
 
-Sans aucun des trois, la page se construit quand même : elle omet ces
-adresses plutôt que d'en inventer.
+Sans aucun des trois, la page se construit quand même : elle omet ces adresses plutôt que d'en inventer.
 
 ```bash
 SITE_ORIGIN=https://trced.dev npm run build
@@ -114,25 +89,15 @@ SITE_ORIGIN=https://trced.dev npm run build
 
 ## Accessibilité
 
-- Repères de page : bandeau, contenu, pied — et un raccourci vers le
-  contenu en premier élément focalisable.
-- Les numéros en marge sont du décor et sortent de l'arbre
-  d'accessibilité : la liste ordonnée porte déjà cette information.
-- Le texte qui informe tient le contraste AA sur les deux thèmes. La
-  nuance la plus claire du design system ne sert qu'au décor.
-- Le thème suit le système par défaut, et se force à clair ou sombre. Le
-  choix est le seul état retenu (`trced-theme` en stockage local) ; un
-  script en-tête l'applique avant le premier rendu, sans clignotement.
+- Repères de page : bandeau, contenu, pied, et un raccourci vers le contenu en premier élément focalisable.
+- Les numéros en marge sont du décor et sortent de l'arbre d'accessibilité : la liste ordonnée porte déjà cette information.
+- Le texte qui informe tient le contraste AA sur les deux thèmes. La nuance la plus claire du design system ne sert qu'au décor.
+- Le thème suit le système par défaut, et se force à clair ou sombre. Le choix est le seul état retenu (`trced-theme` en stockage local) ; un script en-tête l'applique avant le premier rendu, sans clignotement.
 
 ## Mise en page
 
-Une colonne centrée jusqu'à 1120 px. Au-delà, trois colonnes dont les deux
-latérales sont de même largeur : c'est ce qui laisse le document au centre
-exact de la fenêtre pendant que l'identité occupe la marge gauche. Les
-filets vont d'un bord à l'autre — ce sont eux qui tiennent la largeur, pas
-le texte, qui garde sa mesure de lecture (`--measure-text`).
+Une colonne centrée jusqu'à 1120 px. Au-delà, trois colonnes dont les deux latérales sont de même largeur : c'est ce qui laisse le document au centre exact de la fenêtre pendant que l'identité occupe la marge gauche. Les filets vont d'un bord à l'autre : ce sont eux qui tiennent la largeur, pas le texte, qui garde sa mesure de lecture (`--measure-text`).
 
 ## Licence
 
-AGPL-3.0-or-later, comme les applications de la famille. Voir
-[LICENSE](LICENSE).
+AGPL-3.0-or-later, comme les applications de la famille. Voir [LICENSE](LICENSE).
