@@ -12,9 +12,7 @@
   --pad-top: 96px;
   --pad-bottom: 96px;
 
-  --t-display: calc(200px * var(--k));
   --t-name: calc(120px * var(--k));
-  --t-headline: calc(72px * var(--k));
   --t-lead: calc(48px * var(--k));
   --t-body: calc(36px * var(--k));
   --t-label: calc(32px * var(--k));
@@ -122,137 +120,11 @@
   text-align: right;
 }
 
-/* ————— lignes ————— */
-
-.rows {
-  display: flex;
-  flex-direction: column;
-}
-
-.row {
-  padding: var(--row-pad) 0;
-  border-bottom: var(--rule-hair) solid var(--color-rule);
-  align-items: baseline;
-}
-
-.row__text {
-  font-size: var(--t-body);
-  line-height: var(--leading-body);
-}
-
-.row__meta {
-  font-size: var(--t-meta);
-  color: var(--color-muted-strong);
-  text-align: right;
-  white-space: nowrap;
-}
-
-/* Le premier champ est un rang : du décor chiffré, en retrait. */
-.row--number {
-  display: grid;
-  grid-template-columns: calc(56px * var(--k)) 1fr;
-  gap: 0 var(--gap-inline);
-}
-
-.row--number .row__lead {
-  font-size: var(--t-meta);
-  color: var(--color-muted);
-}
-
-/* Le premier champ est un nom : c'est lui qu'on vient lire. */
-.row--name {
-  display: grid;
-  grid-template-columns: calc(250px * var(--k)) 1fr auto;
-  gap: 0 var(--gap-inline);
-}
-
-.row--name .row__lead {
-  font-size: var(--t-body);
-  font-weight: var(--weight-medium);
-}
-
-.row--name .row__text {
-  color: var(--color-muted-strong);
-}
-
-/* Le premier champ est une étiquette : elle nomme la ligne, sans la porter. */
-.row--label {
-  display: grid;
-  grid-template-columns: calc(240px * var(--k)) 1fr;
-  gap: 0 var(--gap-inline);
-}
-
-.row--label .row__lead {
-  font-size: var(--t-meta);
-  color: var(--color-muted-strong);
-}
-
-/* ————— couverture et fin —————
-   Les deux cartes qui n'ont que le nom à dire. Le mot entier, pas le mark :
-   il est vu en grand, dans un fil, loin de tout contexte. */
-
-.card--cover .card__head,
-.card--outro .card__head {
-  display: none;
-}
-
-.card--cover .card__body,
-.card--outro .card__body {
-  justify-content: center;
-  gap: calc(var(--gap-section) * 0.6);
-}
-
-.cover__brand {
-  font-size: var(--t-display);
-  line-height: var(--leading-tight);
-  letter-spacing: var(--tracking-display);
-  font-weight: var(--weight-medium);
-}
-
-.cover__tagline {
-  font-size: var(--t-lead);
-  line-height: var(--leading-lead);
-  letter-spacing: var(--tracking-lead);
-}
-
-.cover__note {
-  padding-top: calc(var(--row-pad) * 0.8);
-  border-top: var(--rule-hair) solid var(--color-rule);
-  font-size: var(--t-meta);
-  color: var(--color-muted-strong);
-}
-
-.card--outro .cover__brand {
-  font-size: calc(var(--t-display) * 0.7);
-}
-
-.card--outro .rows {
-  padding-top: calc(var(--gap-section) * 0.4);
-}
-
-/* ————— déclaration —————
-   Une phrase tenue en grand, puis ce qu'elle recouvre en corps de lecture. */
-
-.statement__lead {
-  font-size: var(--t-headline);
-  line-height: var(--leading-tight);
-  letter-spacing: var(--tracking-display);
-  font-weight: var(--weight-medium);
-}
-
-.statement__text {
-  display: flex;
-  flex-direction: column;
-  gap: calc(var(--row-pad) * 0.9);
-  max-width: var(--measure-card);
-  font-size: var(--t-body);
-  line-height: var(--leading-body);
-}
-
-/* ————— application —————
-   Le nom, la promesse qu'elle affiche elle-même, ce qu'elle fait, ce qu'elle
-   refuse. Le refus est en bas, séparé par un filet : c'est une clause, pas
-   une phrase de plus. */
+/* ————— la présentation —————
+   La seule forme du jeu, répétée cinq fois : le nom, la promesse qu'elle
+   affiche elle-même, ce qu'elle fait, ce qu'elle refuse, et où elle se
+   trouve. Le refus et l'adresse sont en bas, séparés par un filet : ce sont
+   une clause et une destination, pas deux phrases de plus. */
 
 .app {
   flex: 1;
@@ -306,9 +178,9 @@
 }
 
 /* ————— format portrait —————
-   La colonne est deux fois plus étroite qu'en paysage : trois champs n'y
-   tiennent plus sur une ligne. La description passe dessous, comme en page.
-   La carte occupe toute la fenêtre : sa largeur est celle du média. */
+   La carte occupe toute la fenêtre : sa largeur est celle du média, et c'est
+   elle qu'on interroge ici. Rien d'autre ne distingue les deux formats — la
+   même feuille les habille, à la même échelle. */
 
 @media (max-width: 1100px) {
   /* La bande utile est haute : un bloc posé en haut laisserait un vide que
@@ -325,25 +197,5 @@
 
   .app__foot {
     margin-top: 0;
-  }
-
-  .row--name {
-    grid-template-columns: 1fr auto;
-  }
-
-  .row--name .row__lead {
-    grid-column: 1;
-    grid-row: 1;
-  }
-
-  .row--name .row__meta {
-    grid-column: 2;
-    grid-row: 1;
-  }
-
-  .row--name .row__text {
-    grid-column: 1 / -1;
-    grid-row: 2;
-    padding-top: calc(var(--row-pad) * 0.3);
   }
 }

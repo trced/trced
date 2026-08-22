@@ -58,67 +58,29 @@ export function ordinalLabel(index) {
   return String(index + 1).padStart(2, '0')
 }
 
+/** Bandeau de section : un rang, ce qu'on présente, et une mention à droite. */
 function sectionHead(number, title, note) {
-  const aside = note
-    ? `\n      <span class="section-head__note">${escapeHtml(note)}</span>`
-    : ''
   return `<div class="section-head">
       <span class="section-head__number">${escapeHtml(number)}</span>
-      <span class="section-head__title">${escapeHtml(title)}</span>${aside}
+      <span class="section-head__title">${escapeHtml(title)}</span>
+      <span class="section-head__note">${escapeHtml(note)}</span>
     </div>`
 }
 
-function rows(items, variant) {
-  const lines = items.map((item) => {
-    const meta =
-      item.meta === undefined || item.meta === ''
-        ? ''
-        : `\n        <span class="row__meta">${escapeHtml(item.meta)}</span>`
-    return `      <li class="row row--${variant}">
-        <span class="row__lead">${escapeHtml(item.lead)}</span>
-        <span class="row__text">${escapeHtml(item.text)}</span>${meta}
-      </li>`
-  })
-  return `<ul class="rows">\n${lines.join('\n')}\n    </ul>`
-}
-
-/** Le corps de la carte, selon ce qu'elle a à dire. */
+/**
+ * Le corps d'une présentation : le nom, la promesse qu'elle affiche
+ * elle-même, ce qu'elle fait, puis ce qu'elle refuse et où elle se trouve.
+ *
+ * Le paragraphe explique, et personne ne lit une explication debout : la
+ * story s'en passe. L'adresse, elle, est là dans les deux cas — c'est la
+ * seule chose qu'une carte demande de faire.
+ */
 function body(card, number) {
-  if (card.kind === 'cover') {
-    return `<p class="cover__brand">${escapeHtml(BRAND)}</p>
-      <p class="cover__tagline">${escapeHtml(card.tagline)}</p>
-      <p class="cover__note">${escapeHtml(card.note)}</p>`
-  }
+  const text = card.body
+    ? `\n        <p class="app__text">${escapeHtml(card.body)}</p>`
+    : ''
 
-  if (card.kind === 'outro') {
-    return `<p class="cover__brand">${escapeHtml(BRAND)}</p>
-      <p class="cover__tagline">${escapeHtml(card.tagline)}</p>
-      ${rows(card.rows, 'label')}`
-  }
-
-  if (card.kind === 'statement') {
-    const paragraphs = card.body
-      .map((text) => `<p>${escapeHtml(text)}</p>`)
-      .join('\n        ')
-    return `${sectionHead(number, card.section, card.note)}
-      <p class="statement__lead">${escapeHtml(card.lead)}</p>
-      <div class="statement__text">
-        ${paragraphs}
-      </div>`
-  }
-
-  if (card.kind === 'rows') {
-    return `${sectionHead(number, card.section, card.note)}
-    ${rows(card.rows, card.leadKind)}`
-  }
-
-  if (card.kind === 'app') {
-    // Le paragraphe explique ; la story s'en passe. L'adresse, elle, est là
-    // dans les deux cas : c'est la seule chose qu'une carte demande de faire.
-    const text = card.body
-      ? `\n        <p class="app__text">${escapeHtml(card.body)}</p>`
-      : ''
-    return `${sectionHead(number, card.section, card.note)}
+  return `${sectionHead(number, card.section, card.note)}
       <div class="app">
         <p class="app__name">${escapeHtml(card.name)}</p>
         <p class="app__promise">${escapeHtml(card.promise)}</p>${text}
@@ -127,9 +89,6 @@ function body(card, number) {
           <p class="app__link">${escapeHtml(card.url)}</p>
         </div>
       </div>`
-  }
-
-  throw new Error(`carte de type inconnu : ${card.kind}`)
 }
 
 /** Les valeurs qu'un format apporte à la feuille : elles viennent des
@@ -150,24 +109,25 @@ function ratioStyle(ratio) {
  *
  * `css` est la feuille entière, fonte comprise : le document ne demande
  * aucun fichier, donc aucune requête ne peut arriver après la capture.
+ * Le thème est porté par `data-theme`, comme sur le site : la carte ne
+ * connaît pas ses propres couleurs, elle les reçoit de `tokens.css`.
  */
-export function renderCard({ card, index, lang, ratio, footer, css }) {
+export function renderCard({ card, index, lang, ratio, tone, footer, css }) {
   const shown = forRatio(card, ratio)
-  const theme = shown.tone === 'ink' ? 'dark' : 'light'
   const number = ordinalLabel(index)
   const foot = shown.footer ?? footer
 
   return `<!doctype html>
-<html lang="${lang}" data-theme="${theme}">
+<html lang="${lang}" data-theme="${tone.theme}">
   <head>
     <meta charset="utf-8" />
-    <title>${escapeHtml(BRAND)} — ${escapeHtml(shown.slug)} — ${escapeHtml(ratio.id)}</title>
+    <title>${escapeHtml(BRAND)} — ${escapeHtml(shown.slug)} — ${escapeHtml(ratio.id)} — ${escapeHtml(tone.id)}</title>
     <style>
 ${css}
     </style>
   </head>
   <body>
-    <div class="card card--${shown.kind}" style="${ratioStyle(ratio)}">
+    <div class="card" style="${ratioStyle(ratio)}">
       <header class="card__head">${escapeHtml(BRAND)}</header>
       <main class="card__body">
       ${body(shown, number)}
@@ -183,8 +143,9 @@ ${css}
 `
 }
 
-/** Le nom du fichier d'une carte : son rang, puis ce qu'elle dit. Les images
- *  se rangent donc dans l'ordre où elles se postent, sans qu'on les trie. */
-export function cardFilename(card, index) {
-  return `${ordinalLabel(index)}-${card.slug}.png`
+/** Le nom du fichier d'une carte : son rang, ce qu'elle présente, et sur
+ *  quel fond. Les images se rangent donc dans l'ordre où elles se postent,
+ *  les deux fonds d'une même présentation côte à côte. */
+export function cardFilename(card, index, tone) {
+  return `${ordinalLabel(index)}-${card.slug}-${tone.id}.png`
 }

@@ -25,7 +25,7 @@ npm run typecheck  # tsc --noEmit
 npm run build      # typecheck puis écriture de dist/
 npm run preview    # sert dist/
 npm run icons      # regénère favicon et icônes depuis le glyphe « t. »
-npm run social     # regénère les cartes sociales, 16:9 et 9:16, fr et en
+npm run social     # regénère les cartes sociales : 5 × clair/sombre × 2 formats × 2 langues
 ```
 
 ## Structure
@@ -58,9 +58,9 @@ scripts/
   make-icons.mjs    autonome : tracé figé, rastériseur, encodeur PNG
   make-social.mjs   écrit les cartes, puis les photographie
   social/
-    deck.mjs        le contenu des cartes, fr et en
+    deck.mjs        les cinq présentations, fr et en
     render.mjs      carte → document, fonctions pures
-    card.css        la carte, un jeu de règles pour les deux formats
+    card.css        la carte, une seule forme, deux formats, deux fonds
     deck.test.mjs   parité entre langues, et fidélité à src/content/
 vite.config.ts      le plugin qui écrit le contenu dans les squelettes
 ```
@@ -73,11 +73,14 @@ Le manifeste ne sert qu'à donner une icône correcte à qui ajoute la page à s
 
 ### Les cartes sociales
 
-Neuf cartes qui présentent la famille et ses applications : la couverture, ce
-qu'est la famille, ses cinq principes, la liste des applications, puis une
-carte par application publiée, et une carte de fin. Chacune est écrite dans
-les deux formats demandés par les réseaux et dans les deux langues du site —
-trente-six images en tout.
+Cinq présentations : la famille, puis chacune de ses applications publiées.
+Toutes ont la même forme — un nom, la promesse qu'elle affiche elle-même, ce
+qu'elle fait, ce qu'elle refuse, et où elle se trouve. C'est la répétition de
+cette forme qui fait tenir le jeu ensemble.
+
+Chacune est écrite sur les deux fonds de la famille — **dix images** — dans
+les deux formats demandés par les réseaux, et dans les deux langues du site.
+Quarante fichiers.
 
 | Format | Taille    | Pour                                  |
 | ------ | --------- | ------------------------------------- |
@@ -85,13 +88,17 @@ trente-six images en tout.
 | `9x16` | 1080×1920 | une story : Instagram, et ses cousines |
 
 ```
-public/social/<langue>/<format>/<rang>-<carte>.png
+public/social/<langue>/<format>/<rang>-<carte>-<fond>.png
 ```
 
-Le rang est celui de la carte dans le jeu : les fichiers se rangent donc dans
-l'ordre où ils se postent, et un carrousel se monte en les ajoutant tels
-quels. Les images étant dans `public/`, elles partent avec le site : on les
+Le rang est celui de la présentation dans le jeu : les fichiers se rangent
+donc dans l'ordre où ils se postent, les deux fonds d'une même carte côte à
+côte. Les images étant dans `public/`, elles partent avec le site : on les
 récupère depuis un téléphone au moment de poster, sans cloner le dépôt.
+
+Le fond n'est pas une couleur écrite dans la carte : c'est `data-theme` sur le
+document, comme sur le site, et `tokens.css` fait le reste. Une carte ne
+connaît pas ses propres teintes.
 
 En portrait, l'interface d'Instagram recouvre environ 250 px en haut comme en
 bas ; rien d'important n'y descend, et le test le vérifie.
@@ -99,9 +106,8 @@ bas ; rien d'important n'y descend, et le test le vérifie.
 Les deux formats ne disent pas la même chose. Une story se lit debout, le
 pouce déjà prêt à passer à la suivante : elle n'a pas le temps d'un
 paragraphe. Chaque carte porte donc une version courte dans son champ
-`story`, qui ne remplace que ce qu'elle nomme — un principe tenu en quatre
-mots, une carte d'application réduite au nom, à la promesse, au refus et à
-l'adresse. En paysage, la carte est entière.
+`story`, qui ne remplace que ce qu'elle nomme — un champ mis à `null`
+disparaît. En paysage, la carte est entière.
 
 Les adresses des applications sont celles de `src/page/links.ts`, et le
 domaine du site est la seule ligne à changer le jour où il change :
@@ -119,12 +125,12 @@ renseigne avec `CHROME_PATH` s'il n'est pas là où on l'attend.
 CHROME_PATH="/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" npm run social
 ```
 
-Le texte est dans `scripts/social/deck.mjs`, et lui seul. Les promesses, les
-principes et les versions y sont repris mot pour mot de `src/content/` : une
-carte ne reformule pas ce que la vitrine a déjà écrit, et `deck.test.mjs`
-refuse toute dérive — entre les deux langues comme entre les cartes et la
-page. Les documents intermédiaires restent dans `.social/` : on peut y ouvrir
-une carte au navigateur pour la relire avant de la photographier.
+Le texte est dans `scripts/social/deck.mjs`, et lui seul. Les promesses et
+les versions y sont reprises mot pour mot de `src/content/` : une carte ne
+reformule pas ce que la vitrine a déjà écrit, et `deck.test.mjs` refuse toute
+dérive — entre les deux langues, entre les cartes et la page, et entre les
+deux formats. Les documents intermédiaires restent dans `.social/` : on peut
+y ouvrir une carte au navigateur pour la relire avant de la photographier.
 
 ### Modifier le contenu
 

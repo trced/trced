@@ -1,7 +1,9 @@
 /**
- * Génère les images de partage pour les réseaux, dans les deux formats
- * demandés — 16:9 pour un fil, 9:16 pour une story — et dans les deux
- * langues du site.
+ * Génère les images de partage pour les réseaux.
+ *
+ * Cinq présentations — la famille, puis chacune de ses applications — dans
+ * les deux formats demandés (16:9 pour un fil, 9:16 pour une story), sur les
+ * deux fonds de la famille, et dans les deux langues du site.
  *
  *   node scripts/make-social.mjs
  *
@@ -33,7 +35,7 @@ import {
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
-import { DECKS, LANGS, RATIOS } from './social/deck.mjs'
+import { DECKS, LANGS, RATIOS, TONES } from './social/deck.mjs'
 import { cardFilename, renderCard } from './social/render.mjs'
 
 const HERE = dirname(fileURLToPath(import.meta.url))
@@ -165,16 +167,18 @@ for (const lang of LANGS) {
     mkdirSync(pngDir, { recursive: true })
 
     deck.cards.forEach((card, index) => {
-      const name = cardFilename(card, index)
-      const htmlPath = join(htmlDir, name.replace(/\.png$/, '.html'))
-      const pngPath = join(pngDir, name)
+      for (const tone of TONES) {
+        const name = cardFilename(card, index, tone)
+        const htmlPath = join(htmlDir, name.replace(/\.png$/, '.html'))
+        const pngPath = join(pngDir, name)
 
-      writeFileSync(
-        htmlPath,
-        renderCard({ card, index, lang, ratio, footer: deck.footer, css }),
-      )
-      shoot(chrome, htmlPath, pngPath, ratio)
-      made.push([join('public', 'social', lang, ratio.id, name), pngPath])
+        writeFileSync(
+          htmlPath,
+          renderCard({ card, index, lang, ratio, tone, footer: deck.footer, css }),
+        )
+        shoot(chrome, htmlPath, pngPath, ratio)
+        made.push([join('public', 'social', lang, ratio.id, name), pngPath])
+      }
     })
   }
 }
@@ -184,4 +188,8 @@ for (const [shown, path] of made) {
   const { size } = statSync(path)
   console.log(`${shown} — ${size} o`)
 }
-console.log(`\n${made.length} images, ${LANGS.length} langues, ${RATIOS.length} formats.`)
+const cards = DECKS.fr.cards.length
+console.log(
+  `\n${made.length} images — ${cards} présentations × ${TONES.length} fonds ` +
+    `× ${RATIOS.length} formats × ${LANGS.length} langues.`,
+)

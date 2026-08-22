@@ -1,20 +1,23 @@
 /**
  * Le jeu de cartes n'a pas le droit de dériver.
  *
- * Deux dérives sont possibles, et ce fichier les refuse toutes les deux :
+ * Trois dérives sont possibles, et ce fichier les refuse toutes les trois :
  *
  *  — entre les deux langues : une carte de plus d'un côté, une ligne de moins
  *    de l'autre, et le jeu français ne dit plus la même chose que l'anglais ;
- *  — entre les cartes et la page : les promesses, les principes et les
- *    versions sont écrits dans `src/content/`, et repris ici. Une carte ne
- *    reformule pas ce que la vitrine a déjà écrit, et ne la contredit pas.
+ *  — entre les cartes et la page : les promesses, les versions et les
+ *    adresses sont écrites dans `src/`, et reprises ici. Une carte ne
+ *    reformule pas ce que la vitrine a déjà écrit, et n'invente pas une
+ *    adresse ;
+ *  — entre les deux formats : la story doit vraiment être plus courte que la
+ *    carte de fil, sans rien perdre de ce qui fait agir.
  */
 
 import { describe, expect, it } from 'vitest'
 
 import { CONTENT } from '../../src/content/index.ts'
 import { APP_URLS } from '../../src/page/links.ts'
-import { DECKS, LANGS, RATIOS, SITE } from './deck.mjs'
+import { BRAND, DECKS, LANGS, RATIOS, SITE, TONES } from './deck.mjs'
 import { cardFilename, forRatio, renderCard } from './render.mjs'
 
 /** Une adresse telle qu'elle se lit sur une carte : sans protocole, sans
@@ -24,33 +27,24 @@ function readable(url) {
 }
 
 /** Les champs qui nomment la forme d'une carte, pas ce qu'elle dit. */
-const SHAPE = new Set(['kind', 'slug', 'tone', 'leadKind'])
+const SHAPE = new Set(['slug', 'story'])
 
-/** Le seul champ qui a le droit d'être vide : la ligne « … » de la liste des
- *  applications n'a pas de version, comme en page. */
-const MAY_BE_EMPTY = new Set(['meta'])
-
-/** Tous les textes d'une carte, quel que soit son type, avec leur champ. */
+/** Tous les textes d'une carte, avec le champ d'où ils viennent. Un champ
+ *  mis à `null` par la version courte n'est pas un texte : il n'en est pas. */
 function strings(card) {
-  const flat = []
-  const take = (key, value) => {
-    if (SHAPE.has(key)) return
-    if (typeof value === 'string') flat.push([key, value])
-    else if (Array.isArray(value)) {
-      for (const item of value) {
-        if (typeof item === 'string') flat.push([key, item])
-        else for (const [k, v] of Object.entries(item)) take(k, v)
-      }
-    }
-  }
-  for (const [key, value] of Object.entries(card)) take(key, value)
-  return flat
+  return Object.entries(card).filter(
+    ([key, value]) => !SHAPE.has(key) && typeof value === 'string',
+  )
 }
 
-function card(lang, slug) {
-  const found = DECKS[lang].cards.find((c) => c.slug === slug)
-  expect(found, `carte « ${slug} » en ${lang}`).toBeDefined()
-  return found
+/** Les applications que la page dit publiées — les seules à présenter. */
+function published(lang) {
+  return CONTENT[lang].apps.filter((a) => a.status !== '')
+}
+
+/** Les cartes d'application : le jeu, moins la famille qui l'ouvre. */
+function apps(lang) {
+  return DECKS[lang].cards.slice(1)
 }
 
 describe('les deux jeux sont le miroir l’un de l’autre', () => {
@@ -59,19 +53,10 @@ describe('les deux jeux sont le miroir l’un de l’autre', () => {
     expect(slugs[1]).toEqual(slugs[0])
   })
 
-  it('donnent à chaque carte la même forme et le même fond', () => {
+  it('donnent à chaque carte les mêmes champs', () => {
     for (const [index, fr] of DECKS.fr.cards.entries()) {
       const en = DECKS.en.cards[index]
-      expect(en.kind, fr.slug).toBe(fr.kind)
-      expect(en.tone, fr.slug).toBe(fr.tone)
-      expect(en.leadKind, fr.slug).toBe(fr.leadKind)
       expect(Object.keys(en).sort(), fr.slug).toEqual(Object.keys(fr).sort())
-
-      for (const key of ['rows', 'body']) {
-        if (!Array.isArray(fr[key])) continue
-        expect(en[key].length, `${fr.slug}.${key}`).toBe(fr[key].length)
-      }
-
       expect(Object.keys(en.story ?? {}).sort(), `${fr.slug}.story`).toEqual(
         Object.keys(fr.story ?? {}).sort(),
       )
@@ -91,10 +76,9 @@ describe('les deux jeux sont le miroir l’un de l’autre', () => {
   it("n'ont ni texte vide ni espace en trop", () => {
     for (const lang of LANGS) {
       for (const c of DECKS[lang].cards) {
-        for (const [key, text] of strings(c)) {
+        for (const [key, text] of [...strings(c), ...strings(c.story ?? {})]) {
           const where = `${lang}/${c.slug}.${key}`
           expect(text, where).toBe(text.trim())
-          if (MAY_BE_EMPTY.has(key)) continue
           expect(text.length, where).toBeGreaterThan(0)
         }
       }
@@ -102,53 +86,44 @@ describe('les deux jeux sont le miroir l’un de l’autre', () => {
   })
 })
 
-describe('les cartes reprennent la page mot pour mot', () => {
-  it('reprennent sa promesse et sa signature', () => {
+describe('le jeu présente la famille, puis chacune des siennes', () => {
+  it("s'ouvre sur la famille", () => {
     for (const lang of LANGS) {
-      const page = CONTENT[lang]
-      expect(DECKS[lang].footer).toBe(page.footer)
-      expect(card(lang, 'cover').tagline).toBe(page.tagline)
-      expect(card(lang, 'fin').tagline).toBe(page.tagline)
+      const [first] = DECKS[lang].cards
+      expect(first.slug).toBe('trced')
+      expect(first.name).toBe(BRAND)
+      expect(first.url).toBe(SITE)
+      // La devise de la famille lui sert de signature : elle n'est écrite
+      // qu'une fois, et c'est celle de la page.
+      expect(first.footer).toBe(CONTENT[lang].tagline)
     }
   })
 
-  it('reprennent ses principes, dans son ordre', () => {
+  it('présente les applications publiées, et elles seules', () => {
     for (const lang of LANGS) {
-      const rows = card(lang, 'principes').rows
-      expect(rows).toEqual(
-        CONTENT[lang].principles.map((p) => ({ lead: p.n, text: p.text })),
+      expect(apps(lang).map((c) => c.name)).toEqual(
+        published(lang).map((a) => a.name),
       )
     }
   })
 
-  it('reprennent ses applications, leur promesse et leur version', () => {
+  it('reprend de la page sa promesse, sa version et sa signature', () => {
     for (const lang of LANGS) {
-      const rows = card(lang, 'applications').rows
-      expect(rows).toEqual(
-        CONTENT[lang].apps.map((a) => ({ lead: a.name, text: a.desc, meta: a.status })),
-      )
-    }
-  })
+      expect(DECKS[lang].footer).toBe(CONTENT[lang].footer)
 
-  it("consacrent une carte à chaque application publiée, et à elles seules", () => {
-    for (const lang of LANGS) {
-      const published = CONTENT[lang].apps.filter((a) => a.status !== '')
-      const cards = DECKS[lang].cards.filter((c) => c.kind === 'app')
-
-      expect(cards.map((c) => c.name)).toEqual(published.map((a) => a.name))
-
-      for (const [index, c] of cards.entries()) {
-        const app = published[index]
+      for (const [index, c] of apps(lang).entries()) {
+        const app = published(lang)[index]
         expect(c.promise, c.slug).toBe(app.desc)
         // La mention de droite porte la version telle que la page l'affiche.
         expect(c.note, c.slug).toContain(app.status)
+        expect(forRatio(c, RATIOS[1]).note, c.slug).toContain(app.status)
       }
     }
   })
 
-  it('donnent de chaque application l’adresse que la page lui donne', () => {
+  it('donne de chaque application l’adresse que la page lui donne', () => {
     for (const lang of LANGS) {
-      for (const c of DECKS[lang].cards.filter((x) => x.kind === 'app')) {
+      for (const c of apps(lang)) {
         const url = APP_URLS[c.name]
         expect(url, `${c.name} n'a pas d'adresse dans links.ts`).toBeDefined()
         expect(c.url, c.slug).toBe(readable(url))
@@ -156,29 +131,26 @@ describe('les cartes reprennent la page mot pour mot', () => {
     }
   })
 
-  it('écrivent les adresses comme on les retape', () => {
-    const urls = [SITE]
-    for (const lang of LANGS) {
-      for (const c of DECKS[lang].cards.filter((x) => x.kind === 'app')) urls.push(c.url)
-    }
+  it('écrit les adresses comme on les retape', () => {
+    const urls = [SITE, ...LANGS.flatMap((l) => DECKS[l].cards.map((c) => c.url))]
     for (const url of urls) {
       expect(url, url).not.toContain('://')
       expect(url.endsWith('/'), url).toBe(false)
     }
   })
 
-  it('nomment la famille sur chaque carte d’application, dans les deux formats', () => {
+  it('nomme la famille sur chaque carte, dans les deux formats', () => {
     for (const lang of LANGS) {
-      for (const c of DECKS[lang].cards.filter((x) => x.kind === 'app')) {
+      for (const c of apps(lang)) {
         for (const ratio of RATIOS) {
-          expect(forRatio(c, ratio).footer, `${c.slug}/${ratio.id}`).toContain('trced.')
+          expect(forRatio(c, ratio).footer, `${c.slug}/${ratio.id}`).toContain(BRAND)
         }
       }
     }
   })
 })
 
-describe('les formats', () => {
+describe('les formats et les fonds', () => {
   it('sont bien un 16:9 et un 9:16', () => {
     const ratio = (id) => {
       const found = RATIOS.find((r) => r.id === id)
@@ -189,10 +161,22 @@ describe('les formats', () => {
   })
 
   it("gardent en portrait la bande qu'une story ne recouvre pas", () => {
-    const portrait = RATIOS.find((r) => r.id === '9x16')
+    const portrait = RATIOS.find((r) => r.brief)
     // Instagram pose son interface sur environ 250 px en haut comme en bas.
     expect(portrait.padTop).toBeGreaterThanOrEqual(250)
     expect(portrait.padBottom).toBeGreaterThanOrEqual(250)
+  })
+
+  it('sont les deux fonds de la famille, et rien d’autre', () => {
+    expect(TONES.map((t) => t.id)).toEqual(['light', 'dark'])
+    expect(TONES.map((t) => t.theme)).toEqual(['light', 'dark'])
+  })
+
+  it('font dix images par langue et par format', () => {
+    for (const lang of LANGS) {
+      expect(DECKS[lang].cards.length).toBe(1 + published(lang).length)
+      expect(DECKS[lang].cards.length * TONES.length).toBe(10)
+    }
   })
 })
 
@@ -208,38 +192,32 @@ describe('la story va droit au but', () => {
     }
   })
 
+  it('en dit moins que la carte de fil, sur chaque carte', () => {
+    for (const lang of LANGS) {
+      for (const c of DECKS[lang].cards) {
+        const brief = forRatio(c, portrait)
+        const length = (x) => (x.body ?? '').length
+        expect(length(brief), `${lang}/${c.slug}`).toBeLessThan(length(c))
+      }
+    }
+  })
+
   it('retire le paragraphe des cartes d’application', () => {
     for (const lang of LANGS) {
-      for (const c of DECKS[lang].cards.filter((x) => x.kind === 'app')) {
+      for (const c of apps(lang)) {
         expect(c.body.length, c.slug).toBeGreaterThan(0)
         expect(forRatio(c, portrait).body, c.slug).toBeNull()
       }
     }
   })
 
-  it('garde le nom, la promesse et l’adresse', () => {
+  it('garde le nom, la promesse, le refus et l’adresse', () => {
     for (const lang of LANGS) {
-      for (const c of DECKS[lang].cards.filter((x) => x.kind === 'app')) {
+      for (const c of DECKS[lang].cards) {
         const brief = forRatio(c, portrait)
-        expect(brief.name, c.slug).toBe(c.name)
-        expect(brief.promise, c.slug).toBe(c.promise)
-        expect(brief.url, c.slug).toBe(c.url)
-        expect(brief.refuses, c.slug).toBe(c.refuses)
-      }
-    }
-  })
-
-  it('dit chaque principe plus court qu’en page', () => {
-    for (const lang of LANGS) {
-      const long = DECKS[lang].cards.find((c) => c.slug === 'principes')
-      const brief = forRatio(long, portrait)
-      expect(brief.rows.length).toBe(long.rows.length)
-
-      for (const [index, row] of brief.rows.entries()) {
-        expect(row.lead, `${lang}/${index}`).toBe(long.rows[index].lead)
-        expect(row.text.length, `${lang}/${row.lead}`).toBeLessThan(
-          long.rows[index].text.length,
-        )
+        for (const key of ['name', 'promise', 'refuses', 'url']) {
+          expect(brief[key], `${c.slug}.${key}`).toBe(c[key])
+        }
       }
     }
   })
@@ -249,38 +227,56 @@ describe('le rendu', () => {
   const css = ':root { --x: 0 }'
 
   it('range les images dans l’ordre où elles se postent', () => {
-    const names = DECKS.fr.cards.map((c, i) => cardFilename(c, i))
-    expect(names[0]).toBe('01-cover.png')
-    expect(names.at(-1)).toBe('09-fin.png')
-    expect([...names].sort()).toEqual(names)
+    const names = DECKS.fr.cards.flatMap((c, i) =>
+      TONES.map((tone) => cardFilename(c, i, tone)),
+    )
+    expect(names).toHaveLength(10)
+    expect(names[0]).toBe('01-trced-light.png')
+    expect(names[1]).toBe('01-trced-dark.png')
+    expect(names.at(-1)).toBe('05-urge-dark.png')
+    expect(new Set(names).size).toBe(names.length)
   })
 
-  it('écrit un document complet, à la taille exacte du média', () => {
+  it('écrit un document complet, dans le fond et la taille demandés', () => {
     for (const lang of LANGS) {
       for (const ratio of RATIOS) {
-        DECKS[lang].cards.forEach((c, index) => {
-          const html = renderCard({
-            card: c,
-            index,
-            lang,
-            ratio,
-            footer: DECKS[lang].footer,
-            css,
+        for (const tone of TONES) {
+          DECKS[lang].cards.forEach((card, index) => {
+            const html = renderCard({
+              card,
+              index,
+              lang,
+              ratio,
+              tone,
+              footer: DECKS[lang].footer,
+              css,
+            })
+            expect(html.startsWith('<!doctype html>')).toBe(true)
+            expect(html).toContain(`<html lang="${lang}" data-theme="${tone.theme}">`)
+            expect(html).toContain(`width:${ratio.width}px;height:${ratio.height}px`)
+            expect(html).toContain(card.url)
           })
-          expect(html.startsWith('<!doctype html>')).toBe(true)
-          expect(html).toContain(`<html lang="${lang}"`)
-          expect(html).toContain(`width:${ratio.width}px;height:${ratio.height}px`)
-        })
+        }
       }
     }
   })
 
   it('échappe ce qui viendrait fermer une balise', () => {
     const html = renderCard({
-      card: { slug: 'x', kind: 'cover', tone: 'ink', tagline: '</style><b>', note: 'n' },
+      card: {
+        slug: 'x',
+        section: 's',
+        note: 'n',
+        name: '</style><b>',
+        promise: 'p',
+        body: 'b',
+        refuses: 'r',
+        url: 'u',
+      },
       index: 0,
       lang: 'fr',
       ratio: RATIOS[0],
+      tone: TONES[0],
       footer: 'f',
       css,
     })
