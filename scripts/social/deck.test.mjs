@@ -93,9 +93,37 @@ describe('le jeu présente la famille, puis chacune des siennes', () => {
       expect(first.slug).toBe('trced')
       expect(first.name).toBe(BRAND)
       expect(first.url).toBe(SITE)
-      // La devise de la famille lui sert de signature : elle n'est écrite
-      // qu'une fois, et c'est celle de la page.
-      expect(first.footer).toBe(CONTENT[lang].tagline)
+    }
+  })
+
+  it('porte la philosophie sur chaque carte, dans les deux formats', () => {
+    for (const lang of LANGS) {
+      const philosophy = CONTENT[lang].tagline
+
+      for (const ratio of RATIOS) {
+        // Sous le nom de la famille, la philosophie tient lieu de promesse :
+        // c'est la première chose qu'on lit, comme sur la page.
+        expect(forRatio(DECKS[lang].cards[0], ratio).promise).toBe(philosophy)
+
+        // Une application affiche sa propre promesse ; la philosophie passe
+        // alors en signature, en toutes lettres et non sous-entendue.
+        for (const c of apps(lang)) {
+          expect(forRatio(c, ratio).footer, `${c.slug}/${ratio.id}`).toContain(
+            philosophy,
+          )
+        }
+      }
+    }
+  })
+
+  it("n'emploie nulle part le point médian", () => {
+    for (const lang of LANGS) {
+      for (const c of DECKS[lang].cards) {
+        for (const [key, text] of [...strings(c), ...strings(c.story ?? {})]) {
+          expect(text, `${lang}/${c.slug}.${key}`).not.toContain('·')
+        }
+      }
+      expect(DECKS[lang].footer).not.toContain('·')
     }
   })
 
@@ -107,10 +135,8 @@ describe('le jeu présente la famille, puis chacune des siennes', () => {
     }
   })
 
-  it('reprend de la page sa promesse, sa version et sa signature', () => {
+  it('reprend de la page sa promesse et sa version', () => {
     for (const lang of LANGS) {
-      expect(DECKS[lang].footer).toBe(CONTENT[lang].footer)
-
       for (const [index, c] of apps(lang).entries()) {
         const app = published(lang)[index]
         expect(c.promise, c.slug).toBe(app.desc)

@@ -78,6 +78,16 @@ Toutes ont la même forme — un nom, la promesse qu'elle affiche elle-même, ce
 qu'elle fait, ce qu'elle refuse, et où elle se trouve. C'est la répétition de
 cette forme qui fait tenir le jeu ensemble.
 
+La philosophie de la famille est écrite sur chacune, en toutes lettres. Sous
+le nom de la famille, elle tient lieu de promesse : c'est la première chose
+qu'on lit. Une application affichant la sienne, la philosophie y passe en
+signature de pied. Le test la cherche sur les cinq cartes, dans les deux
+formats.
+
+Les énumérations s'écrivent à la virgule. Le point médian sépare bien, mais
+il se lit mal dans une image réduite au tiers de sa taille dans un fil — et
+le test refuse qu'il revienne.
+
 Chacune est écrite sur les deux fonds de la famille — **dix images** — dans
 les deux formats demandés par les réseaux, et dans les deux langues du site.
 Quarante fichiers.

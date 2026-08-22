@@ -59,147 +59,148 @@ export const TONES = [
 
 export const LANGS = ['fr', 'en']
 
-const FR_FAMILY = 'une des applications de la famille trced.'
-const EN_FAMILY = 'one of the apps in the trced. family'
-
-/** La même chose, à la mesure d'une story : la colonne est deux fois plus
- *  étroite, et le pied n'y tient qu'à une ligne. */
-const FR_FAMILY_BRIEF = 'la famille trced.'
-const EN_FAMILY_BRIEF = 'the trced. family'
+/** La signature du pied, sur chaque carte d'application : le nom de la
+ *  famille et sa philosophie, en une ligne. C'est elle que la carte laisse
+ *  quand on a oublié le reste — elle est donc écrite en toutes lettres, et
+ *  pas seulement sous-entendue par le mark en haut à gauche. */
+const FR_FAMILY = 'trced. — Une chose, bien faite.'
+const EN_FAMILY = 'trced. — One thing, done well.'
 
 /** Les cinq présentations, dans l'ordre où on les poste : la famille d'abord,
  *  puis ses applications dans l'ordre de la page. Le numéro affiché est le
  *  rang dans le jeu : il se calcule au rendu, il ne s'écrit pas ici. */
 export const DECKS = {
   fr: {
-    footer: 'sans compte · sans traceur · hors ligne',
+    footer: FR_FAMILY,
     cards: [
       {
         slug: 'trced',
         section: 'la famille',
         note: 'quatre applications',
         name: 'trced.',
-        promise: 'une famille de micro-applications',
+        // La promesse de la famille est sa philosophie, mot pour mot celle
+        // de la page : c'est la première chose qu'on lit sous le nom.
+        promise: 'Une chose, bien faite.',
         body: "Quatre aujourd'hui : habit., journal., race., urge. Chacune fait une seule chose, et la fait bien. Gratuites, sans compte, sans publicité ni traceur, et hors ligne : les données restent sur l'appareil.",
-        refuses: 'sans compte · sans traceur · hors ligne',
+        refuses: 'sans compte, sans traceur, hors ligne',
         url: 'trced.vercel.app',
-        footer: 'Une chose, bien faite.',
+        footer: 'une famille de micro-applications',
         // Debout, on ne lit pas un paragraphe : les quatre noms suffisent.
-        story: { body: 'habit. · journal. · race. · urge.' },
+        story: { body: 'habit. journal. race. urge.' },
       },
       {
         slug: 'habit',
         section: 'application',
-        note: 'v0.1.1 · en ligne',
+        note: 'v0.1.1',
         name: 'habit.',
         promise: 'une semaine, une grille',
         body: "Sept colonnes, une par jour. On coche, on ne compte pas. Aucune série à tenir, aucun coach : la grille montre la semaine, et rien d'autre.",
-        refuses: 'sans compte · sans série · sans coach',
+        refuses: 'sans compte, sans série, sans coach',
         url: 'habit-eight-blue.vercel.app',
         footer: FR_FAMILY,
-        story: { note: 'v0.1.1', body: null, footer: FR_FAMILY_BRIEF },
+        story: { body: null },
       },
       {
         slug: 'journal',
         section: 'application',
-        note: 'v0.1.0 · en ligne',
+        note: 'v0.1.0',
         name: 'journal.',
         promise: 'une année, un jour à la fois',
         body: "Une page par jour, trois cent soixante-cinq fois. Pas de rappel, pas de note d'humeur, pas d'analyse : on écrit, ou on n'écrit pas.",
-        refuses: 'sans compte · sans rappel · sans analyse',
+        refuses: 'sans compte, sans rappel, sans analyse',
         url: 'journal-seven-fawn.vercel.app',
         footer: FR_FAMILY,
-        story: { note: 'v0.1.0', body: null, footer: FR_FAMILY_BRIEF },
+        story: { body: null },
       },
       {
         slug: 'race',
         section: 'application',
-        note: 'v0.1.2 · en ligne',
+        note: 'v0.1.2',
         name: 'race.',
         promise: 'toutes vos courses, une ligne chacune',
         body: "Chaque course tient sur une ligne : la date, la distance, le temps. Le carnet reste sur l'appareil et s'exporte en un fichier, lisible sans lui.",
-        refuses: 'sans compte · sans serveur · sans traceur',
+        refuses: 'sans compte, sans serveur, sans traceur',
         url: 'race-ochre.vercel.app',
         footer: FR_FAMILY,
-        story: { note: 'v0.1.2', body: null, footer: FR_FAMILY_BRIEF },
+        story: { body: null },
       },
       {
         slug: 'urge',
         section: 'application',
-        note: 'v0.1.0 · en ligne',
+        note: 'v0.1.0',
         name: 'urge.',
         promise: 'une envie, trente jours, une question',
         body: "Une envie d'achat, notée. Trente jours plus tard, une seule question : est-ce que tu la veux toujours ? La réponse fait le reste.",
-        refuses: "sans compte · sans liste d'envies · sans traceur",
+        refuses: "sans compte, sans liste d'envies, sans traceur",
         url: 'urge-omega.vercel.app',
         footer: FR_FAMILY,
-        story: { note: 'v0.1.0', body: null, footer: FR_FAMILY_BRIEF },
+        story: { body: null },
       },
     ],
   },
 
   en: {
-    footer: 'no account · no trackers · offline',
+    footer: EN_FAMILY,
     cards: [
       {
         slug: 'trced',
         section: 'the family',
         note: 'four apps',
         name: 'trced.',
-        promise: 'a family of micro-apps',
+        promise: 'One thing, done well.',
         body: 'Four so far: habit., journal., race., urge. Each one does a single thing, and does it well. Free, no account, no ads, no trackers, and offline: data stays on the device.',
-        refuses: 'no account · no trackers · offline',
+        refuses: 'no account, no trackers, offline',
         url: 'trced.vercel.app',
-        footer: 'One thing, done well.',
-        story: { body: 'habit. · journal. · race. · urge.' },
+        footer: 'a family of micro-apps',
+        story: { body: 'habit. journal. race. urge.' },
       },
       {
         slug: 'habit',
         section: 'app',
-        note: 'v0.1.1 · live',
+        note: 'v0.1.1',
         name: 'habit.',
         promise: 'one week, one grid',
         body: 'Seven columns, one per day. You tick, you do not count. No streak to keep, no coach: the grid shows the week, and nothing else.',
-        refuses: 'no account · no streak · no coach',
+        refuses: 'no account, no streak, no coach',
         url: 'habit-eight-blue.vercel.app',
         footer: EN_FAMILY,
-        story: { note: 'v0.1.1', body: null, footer: EN_FAMILY_BRIEF },
+        story: { body: null },
       },
       {
         slug: 'journal',
         section: 'app',
-        note: 'v0.1.0 · live',
+        note: 'v0.1.0',
         name: 'journal.',
         promise: 'one year, one day at a time',
         body: 'One page a day, three hundred and sixty-five times. No reminder, no mood score, no analysis: you write, or you do not.',
-        refuses: 'no account · no reminder · no analysis',
+        refuses: 'no account, no reminder, no analysis',
         url: 'journal-seven-fawn.vercel.app',
         footer: EN_FAMILY,
-        story: { note: 'v0.1.0', body: null, footer: EN_FAMILY_BRIEF },
+        story: { body: null },
       },
       {
         slug: 'race',
         section: 'app',
-        note: 'v0.1.2 · live',
+        note: 'v0.1.2',
         name: 'race.',
         promise: 'all your races, one line each',
         body: 'Every race fits on one line: the date, the distance, the time. The logbook stays on the device and exports to one file, readable without it.',
-        refuses: 'no account · no server · no tracking',
+        refuses: 'no account, no server, no tracking',
         url: 'race-ochre.vercel.app',
         footer: EN_FAMILY,
-        story: { note: 'v0.1.2', body: null, footer: EN_FAMILY_BRIEF },
+        story: { body: null },
       },
       {
         slug: 'urge',
         section: 'app',
-        note: 'v0.1.0 · live',
+        note: 'v0.1.0',
         name: 'urge.',
         promise: 'one urge, thirty days, one question',
         body: 'One urge to buy, written down. Thirty days later, a single question: do you still want it? The answer does the rest.',
-        refuses: 'no account · no wishlist · no tracking',
+        refuses: 'no account, no wishlist, no tracking',
         url: 'urge-omega.vercel.app',
         footer: EN_FAMILY,
-        story: { note: 'v0.1.0', body: null, footer: EN_FAMILY_BRIEF },
+        story: { body: null },
       },
     ],
   },
