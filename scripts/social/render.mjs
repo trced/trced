@@ -42,6 +42,17 @@ export function escapeHtml(value) {
   return String(value).replace(/[&<>"']/g, (char) => ESCAPES[char] ?? char)
 }
 
+/**
+ * La carte dans la version que le format demande.
+ *
+ * En paysage, elle est entière. En portrait — une story, lue debout, le pouce
+ * prêt à passer à la suivante — elle passe à sa version courte : `story` ne
+ * remplace que les champs qu'il nomme, et un champ mis à `null` disparaît.
+ */
+export function forRatio(card, ratio) {
+  return ratio.brief && card.story ? { ...card, ...card.story } : card
+}
+
 /** Le rang de la carte dans le jeu, tel qu'il s'affiche : deux chiffres. */
 export function ordinalLabel(index) {
   return String(index + 1).padStart(2, '0')
@@ -102,12 +113,19 @@ function body(card, number) {
   }
 
   if (card.kind === 'app') {
+    // Le paragraphe explique ; la story s'en passe. L'adresse, elle, est là
+    // dans les deux cas : c'est la seule chose qu'une carte demande de faire.
+    const text = card.body
+      ? `\n        <p class="app__text">${escapeHtml(card.body)}</p>`
+      : ''
     return `${sectionHead(number, card.section, card.note)}
       <div class="app">
         <p class="app__name">${escapeHtml(card.name)}</p>
-        <p class="app__promise">${escapeHtml(card.promise)}</p>
-        <p class="app__text">${escapeHtml(card.body)}</p>
-        <p class="app__refuses">${escapeHtml(card.refuses)}</p>
+        <p class="app__promise">${escapeHtml(card.promise)}</p>${text}
+        <div class="app__foot">
+          <p class="app__refuses">${escapeHtml(card.refuses)}</p>
+          <p class="app__link">${escapeHtml(card.url)}</p>
+        </div>
       </div>`
   }
 
@@ -134,24 +152,25 @@ function ratioStyle(ratio) {
  * aucun fichier, donc aucune requête ne peut arriver après la capture.
  */
 export function renderCard({ card, index, lang, ratio, footer, css }) {
-  const theme = card.tone === 'ink' ? 'dark' : 'light'
+  const shown = forRatio(card, ratio)
+  const theme = shown.tone === 'ink' ? 'dark' : 'light'
   const number = ordinalLabel(index)
-  const foot = card.footer ?? footer
+  const foot = shown.footer ?? footer
 
   return `<!doctype html>
 <html lang="${lang}" data-theme="${theme}">
   <head>
     <meta charset="utf-8" />
-    <title>${escapeHtml(BRAND)} — ${escapeHtml(card.slug)} — ${escapeHtml(ratio.id)}</title>
+    <title>${escapeHtml(BRAND)} — ${escapeHtml(shown.slug)} — ${escapeHtml(ratio.id)}</title>
     <style>
 ${css}
     </style>
   </head>
   <body>
-    <div class="card card--${card.kind}" style="${ratioStyle(ratio)}">
+    <div class="card card--${shown.kind}" style="${ratioStyle(ratio)}">
       <header class="card__head">${escapeHtml(BRAND)}</header>
       <main class="card__body">
-      ${body(card, number)}
+      ${body(shown, number)}
       </main>
       <footer class="card__foot">
         <span>${escapeHtml(foot)}</span>

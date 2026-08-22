@@ -13,8 +13,15 @@
 import { describe, expect, it } from 'vitest'
 
 import { CONTENT } from '../../src/content/index.ts'
-import { DECKS, LANGS, RATIOS } from './deck.mjs'
-import { cardFilename, renderCard } from './render.mjs'
+import { APP_URLS } from '../../src/page/links.ts'
+import { DECKS, LANGS, RATIOS, SITE } from './deck.mjs'
+import { cardFilename, forRatio, renderCard } from './render.mjs'
+
+/** Une adresse telle qu'elle se lit sur une carte : sans protocole, sans
+ *  barre finale. C'est la forme qu'on retape, pas celle qu'on clique. */
+function readable(url) {
+  return url.replace(/^https:\/\//, '').replace(/\/$/, '')
+}
 
 /** Les champs qui nomment la forme d'une carte, pas ce qu'elle dit. */
 const SHAPE = new Set(['kind', 'slug', 'tone', 'leadKind'])
@@ -63,6 +70,20 @@ describe('les deux jeux sont le miroir l’un de l’autre', () => {
       for (const key of ['rows', 'body']) {
         if (!Array.isArray(fr[key])) continue
         expect(en[key].length, `${fr.slug}.${key}`).toBe(fr[key].length)
+      }
+
+      expect(Object.keys(en.story ?? {}).sort(), `${fr.slug}.story`).toEqual(
+        Object.keys(fr.story ?? {}).sort(),
+      )
+    }
+  })
+
+  it('ne raccourcissent que des champs qui existent', () => {
+    for (const lang of LANGS) {
+      for (const c of DECKS[lang].cards) {
+        for (const key of Object.keys(c.story ?? {})) {
+          expect(c, `${lang}/${c.slug}.story.${key}`).toHaveProperty(key)
+        }
       }
     }
   })
@@ -125,10 +146,33 @@ describe('les cartes reprennent la page mot pour mot', () => {
     }
   })
 
-  it('nomment la famille sur chaque carte d’application', () => {
+  it('donnent de chaque application l’adresse que la page lui donne', () => {
     for (const lang of LANGS) {
       for (const c of DECKS[lang].cards.filter((x) => x.kind === 'app')) {
-        expect(c.footer, c.slug).toContain('trced.')
+        const url = APP_URLS[c.name]
+        expect(url, `${c.name} n'a pas d'adresse dans links.ts`).toBeDefined()
+        expect(c.url, c.slug).toBe(readable(url))
+      }
+    }
+  })
+
+  it('écrivent les adresses comme on les retape', () => {
+    const urls = [SITE]
+    for (const lang of LANGS) {
+      for (const c of DECKS[lang].cards.filter((x) => x.kind === 'app')) urls.push(c.url)
+    }
+    for (const url of urls) {
+      expect(url, url).not.toContain('://')
+      expect(url.endsWith('/'), url).toBe(false)
+    }
+  })
+
+  it('nomment la famille sur chaque carte d’application, dans les deux formats', () => {
+    for (const lang of LANGS) {
+      for (const c of DECKS[lang].cards.filter((x) => x.kind === 'app')) {
+        for (const ratio of RATIOS) {
+          expect(forRatio(c, ratio).footer, `${c.slug}/${ratio.id}`).toContain('trced.')
+        }
       }
     }
   })
@@ -149,6 +193,55 @@ describe('les formats', () => {
     // Instagram pose son interface sur environ 250 px en haut comme en bas.
     expect(portrait.padTop).toBeGreaterThanOrEqual(250)
     expect(portrait.padBottom).toBeGreaterThanOrEqual(250)
+  })
+})
+
+describe('la story va droit au but', () => {
+  const portrait = RATIOS.find((r) => r.brief)
+  const paysage = RATIOS.find((r) => !r.brief)
+
+  it('ne raccourcit qu’en portrait', () => {
+    for (const lang of LANGS) {
+      for (const c of DECKS[lang].cards) {
+        expect(forRatio(c, paysage), c.slug).toBe(c)
+      }
+    }
+  })
+
+  it('retire le paragraphe des cartes d’application', () => {
+    for (const lang of LANGS) {
+      for (const c of DECKS[lang].cards.filter((x) => x.kind === 'app')) {
+        expect(c.body.length, c.slug).toBeGreaterThan(0)
+        expect(forRatio(c, portrait).body, c.slug).toBeNull()
+      }
+    }
+  })
+
+  it('garde le nom, la promesse et l’adresse', () => {
+    for (const lang of LANGS) {
+      for (const c of DECKS[lang].cards.filter((x) => x.kind === 'app')) {
+        const brief = forRatio(c, portrait)
+        expect(brief.name, c.slug).toBe(c.name)
+        expect(brief.promise, c.slug).toBe(c.promise)
+        expect(brief.url, c.slug).toBe(c.url)
+        expect(brief.refuses, c.slug).toBe(c.refuses)
+      }
+    }
+  })
+
+  it('dit chaque principe plus court qu’en page', () => {
+    for (const lang of LANGS) {
+      const long = DECKS[lang].cards.find((c) => c.slug === 'principes')
+      const brief = forRatio(long, portrait)
+      expect(brief.rows.length).toBe(long.rows.length)
+
+      for (const [index, row] of brief.rows.entries()) {
+        expect(row.lead, `${lang}/${index}`).toBe(long.rows[index].lead)
+        expect(row.text.length, `${lang}/${row.lead}`).toBeLessThan(
+          long.rows[index].text.length,
+        )
+      }
+    }
   })
 })
 

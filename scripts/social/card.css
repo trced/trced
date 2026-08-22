@@ -282,12 +282,27 @@
   line-height: var(--leading-body);
 }
 
-.app__refuses {
+/* Ce que l'application refuse, puis où elle se trouve. Le refus qualifie,
+   l'adresse conclut : c'est la seule ligne de la carte qui demande un geste,
+   et elle est la dernière qu'on lit. */
+.app__foot {
   margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--row-pad) * 0.4);
   padding-top: calc(var(--row-pad) * 0.9);
   border-top: var(--rule-hair) solid var(--color-rule);
-  font-size: var(--t-label);
+}
+
+.app__refuses {
+  font-size: var(--t-meta);
   color: var(--color-muted-strong);
+}
+
+.app__link {
+  font-size: var(--t-label);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-lead);
 }
 
 /* ————— format portrait —————
@@ -302,10 +317,14 @@
     justify-content: center;
   }
 
-  /* En paysage, la clause de refus descend au bas de la carte. Ici, la carte
-     est trop haute pour ça : elle la détacherait du texte qu'elle qualifie. */
+  /* En paysage, refus et adresse descendent au bas de la carte. Ici, elle est
+     trop haute pour ça : ils se détacheraient de ce qu'ils qualifient. */
   .app {
     flex: none;
+  }
+
+  .app__foot {
+    margin-top: 0;
   }
 
   .row--name {

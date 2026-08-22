@@ -96,6 +96,18 @@ récupère depuis un téléphone au moment de poster, sans cloner le dépôt.
 En portrait, l'interface d'Instagram recouvre environ 250 px en haut comme en
 bas ; rien d'important n'y descend, et le test le vérifie.
 
+Les deux formats ne disent pas la même chose. Une story se lit debout, le
+pouce déjà prêt à passer à la suivante : elle n'a pas le temps d'un
+paragraphe. Chaque carte porte donc une version courte dans son champ
+`story`, qui ne remplace que ce qu'elle nomme — un principe tenu en quatre
+mots, une carte d'application réduite au nom, à la promesse, au refus et à
+l'adresse. En paysage, la carte est entière.
+
+Les adresses des applications sont celles de `src/page/links.ts`, et le
+domaine du site est la seule ligne à changer le jour où il change :
+`SITE`, en tête de `deck.mjs`. Le test compare les deux, une adresse
+inventée sur une carte échoue.
+
 `npm run social` regénère tout. Une carte est d'abord un document HTML
 autonome, composé avec `tokens.css` et la fonte de la famille — les cartes
 passent par le design system, elles ne sont pas redessinées à côté. Un
