@@ -58,34 +58,45 @@ export function ordinalLabel(index) {
   return String(index + 1).padStart(2, '0')
 }
 
-/** Bandeau de section : un rang, ce qu'on présente, et une mention à droite. */
+/** Bandeau de section : un rang, ce qu'on présente, et parfois une mention à
+ *  droite. Un numéro de version renseigne qui suit le projet ; il n'apprend
+ *  rien à qui découvre la carte, et une story n'a pas de place à lui donner. */
 function sectionHead(number, title, note) {
+  const aside = note
+    ? `\n      <span class="section-head__note">${escapeHtml(note)}</span>`
+    : ''
   return `<div class="section-head">
       <span class="section-head__number">${escapeHtml(number)}</span>
-      <span class="section-head__title">${escapeHtml(title)}</span>
-      <span class="section-head__note">${escapeHtml(note)}</span>
+      <span class="section-head__title">${escapeHtml(title)}</span>${aside}
     </div>`
 }
 
 /**
- * Le corps d'une présentation : le nom, la promesse qu'elle affiche
- * elle-même, ce qu'elle fait, puis ce qu'elle refuse et où elle se trouve.
+ * Le corps d'une présentation : le nom, ce que c'est, ce qu'on y fait, puis
+ * ce que ça refuse et où ça se trouve.
  *
- * Le paragraphe explique, et personne ne lit une explication debout : la
- * story s'en passe. L'adresse, elle, est là dans les deux cas — c'est la
- * seule chose qu'une carte demande de faire.
+ * Une carte doit d'abord dire ce qu'est la chose. Une baseline le fait sur
+ * la page de l'application, à côté d'une capture ; seule sur un fond uni,
+ * elle ne dit plus rien — la story remplace donc la promesse par ce que
+ * c'est, en clair, et garde une phrase sur le mécanisme réel.
+ *
+ * Ce qu'elle laisse tomber, c'est ce qui n'apprend rien à qui découvre :
+ * le numéro de version, et l'énumération des refus — un lecteur les lit
+ * avant même de savoir de quoi on parle.
  */
 function body(card, number) {
   const text = card.body
     ? `\n        <p class="app__text">${escapeHtml(card.body)}</p>`
+    : ''
+  const refuses = card.refuses
+    ? `\n          <p class="app__refuses">${escapeHtml(card.refuses)}</p>`
     : ''
 
   return `${sectionHead(number, card.section, card.note)}
       <div class="app">
         <p class="app__name">${escapeHtml(card.name)}</p>
         <p class="app__promise">${escapeHtml(card.promise)}</p>${text}
-        <div class="app__foot">
-          <p class="app__refuses">${escapeHtml(card.refuses)}</p>
+        <div class="app__foot">${refuses}
           <p class="app__link">${escapeHtml(card.url)}</p>
         </div>
       </div>`

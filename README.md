@@ -113,11 +113,19 @@ connaît pas ses propres teintes.
 En portrait, l'interface d'Instagram recouvre environ 250 px en haut comme en
 bas ; rien d'important n'y descend, et le test le vérifie.
 
-Les deux formats ne disent pas la même chose. Une story se lit debout, le
-pouce déjà prêt à passer à la suivante : elle n'a pas le temps d'un
-paragraphe. Chaque carte porte donc une version courte dans son champ
-`story`, qui ne remplace que ce qu'elle nomme — un champ mis à `null`
-disparaît. En paysage, la carte est entière.
+Les deux formats ne disent pas la même chose. Chaque carte porte une version
+courte dans son champ `story`, qui ne remplace que ce qu'elle nomme — un
+champ mis à `null` disparaît.
+
+Court ne veut pas dire flou. Une story ne raccourcit pas l'explication : elle
+raccourcit le reste. Elle laisse tomber le numéro de version et l'énumération
+des refus — on les lit avant même de savoir de quoi on parle — et elle
+remplace la baseline par ce qu'est la chose, en clair. Une baseline dit ce
+qu'est l'application sur sa propre page, à côté d'une capture d'écran ; seule
+sur un fond uni, elle ne dit plus rien. « une semaine, une grille » ne
+présente pas `habit.` à qui ne la connaît pas ; « un tracker d'habitudes,
+sans série ni score » si. Reste ensuite une phrase sur le mécanisme réel, et
+l'adresse. Le test refuse une story sans cette phrase.
 
 Les adresses des applications sont celles de `src/page/links.ts`, et le
 domaine du site est la seule ligne à changer le jour où il change :

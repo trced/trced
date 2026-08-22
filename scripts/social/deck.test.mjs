@@ -116,11 +116,17 @@ describe('le jeu présente la famille, puis chacune des siennes', () => {
     }
   })
 
-  it("n'emploie nulle part le point médian", () => {
+  it("n'emploie ni point médian ni apostrophe courbe", () => {
+    // Le point médian sépare bien, mais se lit mal dans une image réduite au
+    // tiers de sa taille dans un fil. L'apostrophe droite est celle de
+    // `src/content/` : deux jeux de cartes côte à côte ne peuvent pas
+    // composer leurs élisions différemment.
     for (const lang of LANGS) {
       for (const c of DECKS[lang].cards) {
         for (const [key, text] of [...strings(c), ...strings(c.story ?? {})]) {
-          expect(text, `${lang}/${c.slug}.${key}`).not.toContain('·')
+          const where = `${lang}/${c.slug}.${key}`
+          expect(text, where).not.toContain('·')
+          expect(text, where).not.toContain('\u2019')
         }
       }
       expect(DECKS[lang].footer).not.toContain('·')
@@ -141,8 +147,8 @@ describe('le jeu présente la famille, puis chacune des siennes', () => {
         const app = published(lang)[index]
         expect(c.promise, c.slug).toBe(app.desc)
         // La mention de droite porte la version telle que la page l'affiche.
+        // La story la laisse tomber : elle n'apprend rien à qui découvre.
         expect(c.note, c.slug).toContain(app.status)
-        expect(forRatio(c, RATIOS[1]).note, c.slug).toContain(app.status)
       }
     }
   })
@@ -228,22 +234,46 @@ describe('la story va droit au but', () => {
     }
   })
 
-  it('retire le paragraphe des cartes d’application', () => {
+  it('laisse de côté la version et l’énumération des refus', () => {
     for (const lang of LANGS) {
-      for (const c of apps(lang)) {
-        expect(c.body.length, c.slug).toBeGreaterThan(0)
-        expect(forRatio(c, portrait).body, c.slug).toBeNull()
+      for (const c of DECKS[lang].cards) {
+        const brief = forRatio(c, portrait)
+        expect(brief.note, `${lang}/${c.slug}.note`).toBeNull()
+        expect(brief.refuses, `${lang}/${c.slug}.refuses`).toBeNull()
+        // La carte de fil, elle, les porte toutes les deux.
+        expect(c.note, c.slug).toBeTruthy()
+        expect(c.refuses, c.slug).toBeTruthy()
       }
     }
   })
 
-  it('garde le nom, la promesse, le refus et l’adresse', () => {
+  it('garde le nom et l’adresse', () => {
     for (const lang of LANGS) {
       for (const c of DECKS[lang].cards) {
         const brief = forRatio(c, portrait)
-        for (const key of ['name', 'promise', 'refuses', 'url']) {
+        for (const key of ['name', 'url']) {
           expect(brief[key], `${c.slug}.${key}`).toBe(c[key])
         }
+      }
+    }
+  })
+
+  it('dit toujours ce qu’est la chose, et ce qu’on y fait', () => {
+    for (const lang of LANGS) {
+      for (const c of DECKS[lang].cards) {
+        const brief = forRatio(c, portrait)
+        const where = `${lang}/${c.slug}`
+
+        // Une baseline dit ce qu'est l'application sur sa propre page, à
+        // côté d'une capture. Seule sur un fond uni, elle ne dit plus rien :
+        // la story a donc le droit de la remplacer, jamais de la vider.
+        expect(brief.promise, where).toBeTruthy()
+
+        // Et surtout : une carte réduite à un nom, une formule et une
+        // adresse n'apprend rien à qui ne connaît pas déjà le projet. La
+        // phrase qui explique le mécanisme reste, plus courte, jamais nulle.
+        expect(brief.body, where).toBeTruthy()
+        expect(brief.body.length, where).toBeGreaterThan(60)
       }
     }
   })
