@@ -174,7 +174,7 @@ for (const lang of LANGS) {
 
         writeFileSync(
           htmlPath,
-          renderCard({ card, index, lang, ratio, tone, footer: deck.footer, css }),
+          renderCard({ card, lang, ratio, tone, footer: deck.footer, css }),
         )
         shoot(chrome, htmlPath, pngPath, ratio)
         made.push([join('public', 'social', lang, ratio.id, name), pngPath])

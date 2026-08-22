@@ -103,11 +103,6 @@
   border-bottom: var(--rule-strong) solid var(--color-ink);
 }
 
-.section-head__number {
-  font-size: var(--t-meta);
-  color: var(--color-muted);
-}
-
 .section-head__title {
   font-size: var(--t-label);
   font-weight: var(--weight-medium);

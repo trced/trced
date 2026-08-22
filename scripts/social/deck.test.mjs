@@ -294,10 +294,9 @@ describe('le rendu', () => {
     for (const lang of LANGS) {
       for (const ratio of RATIOS) {
         for (const tone of TONES) {
-          DECKS[lang].cards.forEach((card, index) => {
+          for (const card of DECKS[lang].cards) {
             const html = renderCard({
               card,
-              index,
               lang,
               ratio,
               tone,
@@ -315,7 +314,7 @@ describe('le rendu', () => {
             expect(html.includes(card.url), `${card.slug}/${ratio.id}`).toBe(
               !ratio.brief || card.url === SITE,
             )
-          })
+          }
         }
       }
     }
@@ -333,7 +332,6 @@ describe('le rendu', () => {
         refuses: 'r',
         url: 'u',
       },
-      index: 0,
       lang: 'fr',
       ratio: RATIOS[0],
       tone: TONES[0],

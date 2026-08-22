@@ -53,20 +53,27 @@ export function forRatio(card, ratio) {
   return ratio.brief && card.story ? { ...card, ...card.story } : card
 }
 
-/** Le rang de la carte dans le jeu, tel qu'il s'affiche : deux chiffres. */
+/** Le rang de la carte dans le jeu, sur deux chiffres. Il ne s'affiche nulle
+ *  part : il ne sert qu'à nommer les fichiers, pour qu'ils se rangent dans
+ *  l'ordre où on les poste. */
 export function ordinalLabel(index) {
   return String(index + 1).padStart(2, '0')
 }
 
-/** Bandeau de section : un rang, ce qu'on présente, et parfois une mention à
- *  droite. Un numéro de version renseigne qui suit le projet ; il n'apprend
- *  rien à qui découvre la carte, et une story n'a pas de place à lui donner. */
-function sectionHead(number, title, note) {
+/** Bandeau de section : ce qu'on présente, et parfois une mention à droite.
+ *
+ *  Le rang de la carte n'y figure pas. Il ordonne un jeu, or une carte se
+ *  poste seule : « 04 » ne dit rien à qui la reçoit, et laisse entendre
+ *  qu'il manque les trois d'avant. Il reste où il sert — en tête du nom de
+ *  fichier, pour que les images se rangent dans l'ordre où on les poste.
+ *
+ *  Un numéro de version renseigne qui suit le projet ; il n'apprend rien à
+ *  qui découvre la carte, et une story n'a pas de place à lui donner. */
+function sectionHead(title, note) {
   const aside = note
     ? `\n      <span class="section-head__note">${escapeHtml(note)}</span>`
     : ''
   return `<div class="section-head">
-      <span class="section-head__number">${escapeHtml(number)}</span>
       <span class="section-head__title">${escapeHtml(title)}</span>${aside}
     </div>`
 }
@@ -89,7 +96,7 @@ function sectionHead(number, title, note) {
  * Sans refus ni adresse, le bloc du bas n'a plus rien à séparer : c'est le
  * filet du pied qui ferme alors la carte, et il n'en faut pas deux.
  */
-function body(card, number) {
+function body(card) {
   const text = card.body
     ? `\n        <p class="app__text">${escapeHtml(card.body)}</p>`
     : ''
@@ -101,7 +108,7 @@ function body(card, number) {
     ? `\n        <div class="app__foot">\n          ${lines.join('\n          ')}\n        </div>`
     : ''
 
-  return `${sectionHead(number, card.section, card.note)}
+  return `${sectionHead(card.section, card.note)}
       <div class="app">
         <p class="app__name">${escapeHtml(card.name)}</p>
         <p class="app__promise">${escapeHtml(card.promise)}</p>${text}${foot}
@@ -129,9 +136,8 @@ function ratioStyle(ratio) {
  * Le thème est porté par `data-theme`, comme sur le site : la carte ne
  * connaît pas ses propres couleurs, elle les reçoit de `tokens.css`.
  */
-export function renderCard({ card, index, lang, ratio, tone, footer, css }) {
+export function renderCard({ card, lang, ratio, tone, footer, css }) {
   const shown = forRatio(card, ratio)
-  const number = ordinalLabel(index)
   const foot = shown.footer ?? footer
 
   return `<!doctype html>
@@ -147,7 +153,7 @@ ${css}
     <div class="card" style="${ratioStyle(ratio)}">
       <header class="card__head">${escapeHtml(BRAND)}</header>
       <main class="card__body">
-      ${body(shown, number)}
+      ${body(shown)}
       </main>
       <footer class="card__foot">
         <span>${escapeHtml(foot)}</span>

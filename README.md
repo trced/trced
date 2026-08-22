@@ -104,7 +104,8 @@ public/social/<langue>/<format>/<rang>-<carte>-<fond>.png
 
 Le rang est celui de la présentation dans le jeu : les fichiers se rangent
 donc dans l'ordre où ils se postent, les deux fonds d'une même carte côte à
-côte. Les images étant dans `public/`, elles partent avec le site : on les
+côte. Il ne figure que là — une carte se poste seule, et « 04 » n'y dirait
+rien qu'un manque des trois d'avant. Les images étant dans `public/`, elles partent avec le site : on les
 récupère depuis un téléphone au moment de poster, sans cloner le dépôt.
 
 Le fond n'est pas une couleur écrite dans la carte : c'est `data-theme` sur le
