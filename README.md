@@ -25,7 +25,7 @@ npm run typecheck  # tsc --noEmit
 npm run build      # typecheck puis écriture de dist/
 npm run preview    # sert dist/
 npm run icons      # regénère favicon et icônes depuis le glyphe « t. »
-npm run social     # regénère les cartes sociales : 5 × clair/sombre × 2 formats × 2 langues
+npm run social     # regénère les cartes sociales — 5 × 2 fonds × 2 formats × 2 langues
 ```
 
 ## Structure
@@ -73,85 +73,44 @@ Le manifeste ne sert qu'à donner une icône correcte à qui ajoute la page à s
 
 ### Les cartes sociales
 
-Cinq présentations : la famille, puis chacune de ses applications publiées.
-Toutes ont la même forme — un nom, la promesse qu'elle affiche elle-même, ce
-qu'elle fait, ce qu'elle refuse, et où elle se trouve. C'est la répétition de
-cette forme qui fait tenir le jeu ensemble. Seul le pied ne change jamais :
-la philosophie de la famille, et son adresse.
+Cinq présentations : la famille, puis chacune de ses applications publiées. Toutes ont la même forme, et c'est sa répétition qui fait tenir le jeu ensemble : un nom, ce que c'est, ce qu'on y fait, ce que ça refuse, et où ça se trouve. Le pied, lui, ne change jamais — la philosophie de la famille, et son adresse.
 
-La philosophie de la famille est écrite sur chacune, en toutes lettres. Sous
-le nom de la famille, elle tient lieu de promesse : c'est la première chose
-qu'on lit. Une application affichant la sienne, la philosophie y passe en
-signature de pied. Le test la cherche sur les cinq cartes, dans les deux
-formats.
+Chacune est écrite sur les deux fonds de la famille — **dix images** — dans les deux formats demandés par les réseaux, et dans les deux langues du site. Quarante fichiers.
 
-Les énumérations s'écrivent à la virgule. Le point médian sépare bien, mais
-il se lit mal dans une image réduite au tiers de sa taille dans un fil — et
-le test refuse qu'il revienne.
-
-Chacune est écrite sur les deux fonds de la famille — **dix images** — dans
-les deux formats demandés par les réseaux, et dans les deux langues du site.
-Quarante fichiers.
-
-| Format | Taille    | Pour                                  |
-| ------ | --------- | ------------------------------------- |
-| `16x9` | 1920×1080 | un fil : X, LinkedIn, Mastodon        |
+| Format | Taille    | Pour                                   |
+| ------ | --------- | -------------------------------------- |
+| `16x9` | 1920×1080 | un fil : X, LinkedIn, Mastodon         |
 | `9x16` | 1080×1920 | une story : Instagram, et ses cousines |
 
 ```
 public/social/<langue>/<format>/<rang>-<carte>-<fond>.png
 ```
 
-Le rang est celui de la présentation dans le jeu : les fichiers se rangent
-donc dans l'ordre où ils se postent, les deux fonds d'une même carte côte à
-côte. Il ne figure que là — une carte se poste seule, et « 04 » n'y dirait
-rien qu'un manque des trois d'avant. Les images étant dans `public/`, elles partent avec le site : on les
-récupère depuis un téléphone au moment de poster, sans cloner le dépôt.
+Le rang ordonne les fichiers, et rien d'autre : les images se rangent dans l'ordre où on les poste, les deux fonds d'une même carte côte à côte. Il ne figure pas sur la carte — elle se poste seule, et « 04 » n'y dirait rien qu'un manque des trois d'avant. Les images étant dans `public/`, elles partent avec le site : on les récupère depuis un téléphone au moment de poster, sans cloner le dépôt.
 
-Le fond n'est pas une couleur écrite dans la carte : c'est `data-theme` sur le
-document, comme sur le site, et `tokens.css` fait le reste. Une carte ne
-connaît pas ses propres teintes.
+Le fond n'est pas une couleur écrite dans la carte : c'est `data-theme` sur le document, comme sur le site, et `tokens.css` fait le reste. Une carte ne connaît pas ses propres teintes.
 
-En portrait, l'interface d'Instagram recouvre environ 250 px en haut comme en
-bas ; rien d'important n'y descend, et le test le vérifie.
+La philosophie de la famille est écrite sur chacune, en toutes lettres. Sous le nom de la famille, elle tient lieu de promesse : c'est la première chose qu'on lit. Une application affichant la sienne, la philosophie y passe en signature de pied. Le test la cherche sur les cinq cartes, dans les deux formats.
 
-Les deux formats ne disent pas la même chose. Chaque carte porte une version
-courte dans son champ `story`, qui ne remplace que ce qu'elle nomme — un
-champ mis à `null` disparaît.
+Les énumérations s'écrivent à la virgule, et les élisions à l'apostrophe droite, celle de `src/content/`. Le point médian sépare bien, mais se lit mal dans une image réduite au tiers de sa taille dans un fil : le test refuse qu'il revienne, lui comme l'apostrophe courbe.
 
-Court ne veut pas dire flou. Une story ne raccourcit pas l'explication : elle
-raccourcit le reste. Elle laisse tomber le numéro de version et l'énumération
-des refus — on les lit avant même de savoir de quoi on parle — ainsi que
-l'adresse de l'application, qui ne se clique pas dans une image et se pose en
-lien à côté. Elle remplace la baseline par ce qu'est la chose, en clair. Une baseline dit ce
-qu'est l'application sur sa propre page, à côté d'une capture d'écran ; seule
-sur un fond uni, elle ne dit plus rien. « une semaine, une grille » ne
-présente pas `habit.` à qui ne la connaît pas ; « un tracker d'habitudes,
-sans série ni score » si. Reste ensuite une phrase sur le mécanisme réel, et
-l'adresse. Le test refuse une story sans cette phrase.
+Les deux formats ne disent pas la même chose. Chaque carte porte une version courte dans son champ `story`, qui ne remplace que ce qu'elle nomme — un champ mis à `null` disparaît.
 
-Les adresses des applications sont celles de `src/page/links.ts`, et le
-domaine du site est la seule ligne à changer le jour où il change :
-`SITE`, en tête de `deck.mjs`. Le test compare les deux, une adresse
-inventée sur une carte échoue.
+Court ne veut pas dire flou : une story ne raccourcit pas l'explication, elle raccourcit le reste. Elle laisse tomber le numéro de version, l'énumération des refus — on les lit avant même de savoir de quoi on parle — et l'adresse de l'application, qui ne se clique pas dans une image et se pose en lien à côté. Elle remplace la baseline par ce qu'est la chose, en clair : une baseline dit ce qu'est l'application sur sa propre page, à côté d'une capture d'écran, mais seule sur un fond uni elle ne dit plus rien. « une semaine, une grille » ne présente pas `habit.` à qui ne la connaît pas ; « un tracker d'habitudes, sans série ni score » si. Reste ensuite une phrase sur le mécanisme réel, et le test refuse une story qui s'en passerait.
 
-`npm run social` regénère tout. Une carte est d'abord un document HTML
-autonome, composé avec `tokens.css` et la fonte de la famille — les cartes
-passent par le design system, elles ne sont pas redessinées à côté. Un
-navigateur sans interface les photographie ensuite, à la taille exacte du
-média : c'est le seul outil que le script ne porte pas lui-même, et il se
-renseigne avec `CHROME_PATH` s'il n'est pas là où on l'attend.
+En portrait, l'interface d'Instagram recouvre environ 250 px en haut comme en bas ; rien d'important n'y descend, et le test le vérifie.
+
+Les adresses des applications sont celles de `src/page/links.ts`, et le domaine du site est la seule ligne à changer le jour où il change : `SITE`, en tête de `deck.mjs`. Le test compare les deux, une adresse inventée sur une carte échoue.
+
+Le texte est dans `scripts/social/deck.mjs`, et lui seul. Les promesses et les versions y sont reprises mot pour mot de `src/content/` : une carte ne reformule pas ce que la vitrine a déjà écrit, et `deck.test.mjs` refuse toute dérive — entre les deux langues, entre les cartes et la page, et entre les deux formats.
+
+`npm run social` regénère tout. Une carte est d'abord un document HTML autonome, composé avec `tokens.css` et la fonte de la famille : les cartes passent par le design system, elles ne sont pas redessinées à côté. Un navigateur sans interface les photographie ensuite, à la taille exacte du média — c'est le seul outil que le script ne porte pas lui-même, et il se renseigne avec `CHROME_PATH` s'il n'est pas là où on l'attend.
 
 ```bash
 CHROME_PATH="/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" npm run social
 ```
 
-Le texte est dans `scripts/social/deck.mjs`, et lui seul. Les promesses et
-les versions y sont reprises mot pour mot de `src/content/` : une carte ne
-reformule pas ce que la vitrine a déjà écrit, et `deck.test.mjs` refuse toute
-dérive — entre les deux langues, entre les cartes et la page, et entre les
-deux formats. Les documents intermédiaires restent dans `.social/` : on peut
-y ouvrir une carte au navigateur pour la relire avant de la photographier.
+Les documents intermédiaires restent dans `.social/` : on peut y ouvrir une carte au navigateur pour la relire avant de la photographier.
 
 ### Modifier le contenu
 
