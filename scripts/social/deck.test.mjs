@@ -234,26 +234,23 @@ describe('la story va droit au but', () => {
     }
   })
 
-  it('laisse de côté la version et l’énumération des refus', () => {
+  it('laisse de côté la version, les refus et l’adresse de l’application', () => {
     for (const lang of LANGS) {
       for (const c of DECKS[lang].cards) {
         const brief = forRatio(c, portrait)
-        expect(brief.note, `${lang}/${c.slug}.note`).toBeNull()
-        expect(brief.refuses, `${lang}/${c.slug}.refuses`).toBeNull()
-        // La carte de fil, elle, les porte toutes les deux.
-        expect(c.note, c.slug).toBeTruthy()
-        expect(c.refuses, c.slug).toBeTruthy()
+        for (const key of ['note', 'refuses', 'url']) {
+          expect(brief[key], `${lang}/${c.slug}.${key}`).toBeNull()
+          // La carte de fil, elle, les porte toutes les trois.
+          expect(c[key], `${lang}/${c.slug}.${key}`).toBeTruthy()
+        }
       }
     }
   })
 
-  it('garde le nom et l’adresse', () => {
+  it('garde le nom', () => {
     for (const lang of LANGS) {
       for (const c of DECKS[lang].cards) {
-        const brief = forRatio(c, portrait)
-        for (const key of ['name', 'url']) {
-          expect(brief[key], `${c.slug}.${key}`).toBe(c[key])
-        }
+        expect(forRatio(c, portrait).name, c.slug).toBe(c.name)
       }
     }
   })
@@ -310,7 +307,14 @@ describe('le rendu', () => {
             expect(html.startsWith('<!doctype html>')).toBe(true)
             expect(html).toContain(`<html lang="${lang}" data-theme="${tone.theme}">`)
             expect(html).toContain(`width:${ratio.width}px;height:${ratio.height}px`)
-            expect(html).toContain(card.url)
+
+            // Le pied porte l'adresse de la famille sur toutes les cartes ;
+            // celle de l'application n'est que sur la carte de fil, où elle
+            // se retape. Une story la met en lien, pas dans l'image.
+            expect(html).toContain(SITE)
+            expect(html.includes(card.url), `${card.slug}/${ratio.id}`).toBe(
+              !ratio.brief || card.url === SITE,
+            )
           })
         }
       }

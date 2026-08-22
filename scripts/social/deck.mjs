@@ -88,6 +88,7 @@ export const DECKS = {
         story: {
           note: null,
           refuses: null,
+          url: null,
           body: 'Quatre applications : habit., journal., race., urge. Chacune fait une seule chose, gratuitement, sans compte et hors ligne.',
         },
       },
@@ -104,6 +105,7 @@ export const DECKS = {
         story: {
           note: null,
           refuses: null,
+          url: null,
           promise: "un tracker d'habitudes, sans série ni score",
           body: "Sept colonnes, une par jour. On coche ce qu'on a fait — un jour non coché n'est pas un échec.",
         },
@@ -121,6 +123,7 @@ export const DECKS = {
         story: {
           note: null,
           refuses: null,
+          url: null,
           promise: 'un journal quotidien, sans rappel ni analyse',
           body: "Une page par jour, et rien d'autre à remplir. Aucune humeur à noter : on écrit, ou on n'écrit pas.",
         },
@@ -141,6 +144,7 @@ export const DECKS = {
         story: {
           note: null,
           refuses: null,
+          url: null,
           promise: 'un carnet de courses à pied',
           body: "Chaque course tient sur une ligne : la date, la distance, le temps. Tout reste sur l'appareil.",
         },
@@ -158,6 +162,7 @@ export const DECKS = {
         story: {
           note: null,
           refuses: null,
+          url: null,
           promise: 'un frein aux achats impulsifs',
           body: "On note l'envie au lieu d'y céder. Trente jours plus tard, une question : on la veut toujours ?",
         },
@@ -181,6 +186,7 @@ export const DECKS = {
         story: {
           note: null,
           refuses: null,
+          url: null,
           body: 'Four apps: habit., journal., race., urge. Each does a single thing — free, no account, offline.',
         },
       },
@@ -197,6 +203,7 @@ export const DECKS = {
         story: {
           note: null,
           refuses: null,
+          url: null,
           promise: 'a habit tracker, with no streak and no score',
           body: 'Seven columns, one per day. You tick what you did — a day left unticked is not a failure.',
         },
@@ -214,6 +221,7 @@ export const DECKS = {
         story: {
           note: null,
           refuses: null,
+          url: null,
           promise: 'a daily journal, with no reminder and no analysis',
           body: 'One page a day, and nothing else to fill in. No mood to score: you write, or you do not.',
         },
@@ -231,6 +239,7 @@ export const DECKS = {
         story: {
           note: null,
           refuses: null,
+          url: null,
           promise: 'a running logbook',
           body: 'Every race fits on one line: the date, the distance, the time. It all stays on the device.',
         },
@@ -248,6 +257,7 @@ export const DECKS = {
         story: {
           note: null,
           refuses: null,
+          url: null,
           promise: 'a brake on impulse buying',
           body: 'You write the urge down instead of giving in. Thirty days later, one question: do you still want it?',
         },

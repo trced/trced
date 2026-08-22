@@ -82,23 +82,29 @@ function sectionHead(number, title, note) {
  *
  * Ce qu'elle laisse tomber, c'est ce qui n'apprend rien à qui découvre :
  * le numéro de version, et l'énumération des refus — un lecteur les lit
- * avant même de savoir de quoi on parle.
+ * avant même de savoir de quoi on parle. Et l'adresse de l'application, qui
+ * ne se clique pas dans une image : une story la porte en lien, et le pied
+ * de la carte garde celle de la famille.
+ *
+ * Sans refus ni adresse, le bloc du bas n'a plus rien à séparer : c'est le
+ * filet du pied qui ferme alors la carte, et il n'en faut pas deux.
  */
 function body(card, number) {
   const text = card.body
     ? `\n        <p class="app__text">${escapeHtml(card.body)}</p>`
     : ''
-  const refuses = card.refuses
-    ? `\n          <p class="app__refuses">${escapeHtml(card.refuses)}</p>`
+  const lines = [
+    card.refuses && `<p class="app__refuses">${escapeHtml(card.refuses)}</p>`,
+    card.url && `<p class="app__link">${escapeHtml(card.url)}</p>`,
+  ].filter(Boolean)
+  const foot = lines.length
+    ? `\n        <div class="app__foot">\n          ${lines.join('\n          ')}\n        </div>`
     : ''
 
   return `${sectionHead(number, card.section, card.note)}
       <div class="app">
         <p class="app__name">${escapeHtml(card.name)}</p>
-        <p class="app__promise">${escapeHtml(card.promise)}</p>${text}
-        <div class="app__foot">${refuses}
-          <p class="app__link">${escapeHtml(card.url)}</p>
-        </div>
+        <p class="app__promise">${escapeHtml(card.promise)}</p>${text}${foot}
       </div>`
 }
 

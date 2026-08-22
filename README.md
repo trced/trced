@@ -76,7 +76,8 @@ Le manifeste ne sert qu'à donner une icône correcte à qui ajoute la page à s
 Cinq présentations : la famille, puis chacune de ses applications publiées.
 Toutes ont la même forme — un nom, la promesse qu'elle affiche elle-même, ce
 qu'elle fait, ce qu'elle refuse, et où elle se trouve. C'est la répétition de
-cette forme qui fait tenir le jeu ensemble.
+cette forme qui fait tenir le jeu ensemble. Seul le pied ne change jamais :
+la philosophie de la famille, et son adresse.
 
 La philosophie de la famille est écrite sur chacune, en toutes lettres. Sous
 le nom de la famille, elle tient lieu de promesse : c'est la première chose
@@ -119,8 +120,9 @@ champ mis à `null` disparaît.
 
 Court ne veut pas dire flou. Une story ne raccourcit pas l'explication : elle
 raccourcit le reste. Elle laisse tomber le numéro de version et l'énumération
-des refus — on les lit avant même de savoir de quoi on parle — et elle
-remplace la baseline par ce qu'est la chose, en clair. Une baseline dit ce
+des refus — on les lit avant même de savoir de quoi on parle — ainsi que
+l'adresse de l'application, qui ne se clique pas dans une image et se pose en
+lien à côté. Elle remplace la baseline par ce qu'est la chose, en clair. Une baseline dit ce
 qu'est l'application sur sa propre page, à côté d'une capture d'écran ; seule
 sur un fond uni, elle ne dit plus rien. « une semaine, une grille » ne
 présente pas `habit.` à qui ne la connaît pas ; « un tracker d'habitudes,
