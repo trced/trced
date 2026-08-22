@@ -21,5 +21,8 @@ npm-debug.log*
 .playwright-mcp/
 .shots/
 
+# documents intermédiaires des cartes sociales — les images, elles, sont suivies
+.social/
+
 # caches d'outillage local
 .claude/tsc-cache/
