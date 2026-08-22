@@ -1,0 +1,196 @@
+/* card.css — la carte, un seul jeu de règles pour les deux formats.
+   Les couleurs, la face et les graisses viennent de `tokens.css` : une carte
+   est un document de la famille, pas une affiche à part. Ce qui lui est
+   propre, c'est l'échelle — une carte est vue à 1080 px de large sur un
+   téléphone, pas à 15 px de corps sur un écran de bureau.
+   `--k` porte cette échelle, et le format l'apporte de l'extérieur. */
+
+.card {
+  /* Échelle et marges : posées en ligne par le rendu, depuis RATIOS. */
+  --k: 1;
+  --pad-x: 140px;
+  --pad-top: 96px;
+  --pad-bottom: 96px;
+
+  --t-name: calc(120px * var(--k));
+  --t-lead: calc(48px * var(--k));
+  --t-body: calc(36px * var(--k));
+  --t-label: calc(32px * var(--k));
+  --t-meta: calc(26px * var(--k));
+
+  --leading-tight: 1;
+  --leading-lead: 1.3;
+  --leading-body: 1.5;
+
+  /* Un filet d'un pixel disparaît dès que l'image est réduite dans un fil :
+     à cette échelle, il en faut l'épaisseur d'un trait de plume. */
+  --rule-strong: calc(3px * var(--k));
+  --rule-hair: calc(2px * var(--k));
+
+  --gap-section: calc(40px * var(--k));
+  --gap-inline: calc(28px * var(--k));
+  --row-pad: calc(24px * var(--k));
+
+  /* La mesure de la famille, à l'échelle de la carte : le texte ne s'étire
+     pas d'un bord à l'autre sous prétexte que l'image est large. */
+  --measure-card: 68ch;
+
+  box-sizing: border-box;
+  padding: var(--pad-top) var(--pad-x) var(--pad-bottom);
+  display: flex;
+  flex-direction: column;
+  background: var(--color-bg);
+  color: var(--color-ink);
+  font-family: var(--font-family);
+  font-weight: var(--weight-regular);
+  overflow: hidden;
+}
+
+.card *,
+.card *::before,
+.card *::after {
+  box-sizing: inherit;
+}
+
+/* ————— bandeau et pied —————
+   Le nom en haut, la signature en bas : entre les deux, la carte est libre.
+   Ces deux repères ne bougent jamais d'une carte à l'autre — c'est ce qui
+   fait tenir un jeu de neuf images comme une seule série. */
+
+.card__head {
+  flex: none;
+  font-size: var(--t-label);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-lead);
+}
+
+.card__body {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-section);
+  padding-block: var(--gap-section);
+}
+
+.card__foot {
+  flex: none;
+  display: flex;
+  gap: var(--gap-inline);
+  justify-content: space-between;
+  align-items: baseline;
+  padding-top: calc(var(--row-pad) * 0.8);
+  border-top: var(--rule-strong) solid var(--color-ink);
+  font-size: var(--t-meta);
+  line-height: var(--leading-meta);
+  color: var(--color-muted-strong);
+}
+
+.card__site {
+  color: var(--color-ink);
+  text-align: right;
+  white-space: nowrap;
+}
+
+/* ————— bandeau de section —————
+   Le même qu'en page : un rang, un titre, parfois une mention à droite. */
+
+.section-head {
+  display: flex;
+  gap: var(--gap-inline);
+  align-items: baseline;
+  padding-bottom: calc(var(--row-pad) * 0.6);
+  border-bottom: var(--rule-strong) solid var(--color-ink);
+}
+
+.section-head__title {
+  font-size: var(--t-label);
+  font-weight: var(--weight-medium);
+}
+
+.section-head__note {
+  margin-left: auto;
+  font-size: var(--t-meta);
+  color: var(--color-muted-strong);
+  text-align: right;
+}
+
+/* ————— la présentation —————
+   La seule forme du jeu, répétée cinq fois : le nom, la promesse qu'elle
+   affiche elle-même, ce qu'elle fait, ce qu'elle refuse, et où elle se
+   trouve. Le refus et l'adresse sont en bas, séparés par un filet : ce sont
+   une clause et une destination, pas deux phrases de plus. */
+
+.app {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--gap-section) * 0.5);
+}
+
+.app__name {
+  font-size: var(--t-name);
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-display);
+  font-weight: var(--weight-medium);
+}
+
+.app__promise {
+  font-size: var(--t-lead);
+  line-height: var(--leading-lead);
+  letter-spacing: var(--tracking-lead);
+  color: var(--color-muted-strong);
+}
+
+.app__text {
+  max-width: var(--measure-card);
+  padding-top: calc(var(--row-pad) * 0.4);
+  font-size: var(--t-body);
+  line-height: var(--leading-body);
+}
+
+/* Ce que l'application refuse, puis où elle se trouve. Le refus qualifie,
+   l'adresse conclut : c'est la seule ligne de la carte qui demande un geste,
+   et elle est la dernière qu'on lit. */
+.app__foot {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--row-pad) * 0.4);
+  padding-top: calc(var(--row-pad) * 0.9);
+  border-top: var(--rule-hair) solid var(--color-rule);
+}
+
+.app__refuses {
+  font-size: var(--t-meta);
+  color: var(--color-muted-strong);
+}
+
+.app__link {
+  font-size: var(--t-label);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-lead);
+}
+
+/* ————— format portrait —————
+   La carte occupe toute la fenêtre : sa largeur est celle du média, et c'est
+   elle qu'on interroge ici. Rien d'autre ne distingue les deux formats — la
+   même feuille les habille, à la même échelle. */
+
+@media (max-width: 1100px) {
+  /* La bande utile est haute : un bloc posé en haut laisserait un vide que
+     rien ne vient tenir. Il se centre entre le nom et la signature. */
+  .card__body {
+    justify-content: center;
+  }
+
+  /* En paysage, refus et adresse descendent au bas de la carte. Ici, elle est
+     trop haute pour ça : ils se détacheraient de ce qu'ils qualifient. */
+  .app {
+    flex: none;
+  }
+
+  .app__foot {
+    margin-top: 0;
+  }
+}

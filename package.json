@@ -17,7 +17,8 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
-    "icons": "node scripts/make-icons.mjs"
+    "icons": "node scripts/make-icons.mjs",
+    "social": "node scripts/make-social.mjs"
   },
   "devDependencies": {
     "@types/node": "^26.2.0",

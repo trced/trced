@@ -6,7 +6,9 @@ export default defineConfig({
     // Le rendu produit une chaîne HTML ; les tests la parsent pour vérifier
     // la structure plutôt que sa mise en forme.
     environment: 'jsdom',
-    include: ['src/**/*.test.ts'],
+    // Le site est en TypeScript ; les générateurs d'images sont des scripts
+    // autonomes, sans dépendance ni compilation. Les deux sont testés.
+    include: ['src/**/*.test.ts', 'scripts/**/*.test.mjs'],
     restoreMocks: true,
   },
 })
